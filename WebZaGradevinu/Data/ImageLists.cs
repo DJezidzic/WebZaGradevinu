@@ -16,10 +16,10 @@ namespace WebZaGradevinu.Data
         }
 
         [Key]
-        public int ID { get; set; }
-        public string Path { get; set; }
+        public int ImgId { get; set; }
         public string ImageName { get; set; }
         public RoomType Types { get; set; }
+        public byte[] Image { get; set; }
 
     }
 }

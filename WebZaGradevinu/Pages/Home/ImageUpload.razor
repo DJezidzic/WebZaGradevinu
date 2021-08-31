@@ -1,0 +1,53 @@
+﻿@page "/ImageUpload"
+@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using BlazorInputFile
+@using System.IO
+ 
+@inherits OwningComponentBase<ImgUploadService>
+
+<h3>ImageUpload</h3>
+<hr/>
+
+<EditForm Model="@imglistobj" OnValidSubmit="@VSubmit">
+    
+    ImageName:<input type="text" @bind="@imglistobj.ImageName"/>
+    <InputSelect @bind-Value="@imglistobj.Types">
+        @foreach(var room in Enum.GetValues(typeof(ImageLists.RoomType)))
+                    {
+                        <option value="@room">@room</option>
+                    }
+    </InputSelect>
+    <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+    <button type="submit">Insert</button>
+
+</EditForm>
+
+
+
+
+
+@code {
+
+    ImageLists imglistobj = new ImageLists();
+    public byte[] imguploadobj { get; set; }
+
+    void VSubmit()
+    {
+        imglistobj.ImgId = 0;
+        imglistobj.Image = imguploadobj;
+        Service.UploadImg(imglistobj);
+    }
+
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var memstrm = new MemoryStream();
+            await file.Data.CopyToAsync(memstrm);
+            imguploadobj = memstrm.ToArray();
+        }
+    }
+
+}
