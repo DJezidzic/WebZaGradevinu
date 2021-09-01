@@ -21,5 +21,10 @@ namespace WebZaGradevinu.Services
             return true;
         }
 
+        public List<ImageLists> displayImage()
+        {
+            return _dbcontext.ImageListing.ToList();
+        }
+
     }
 }

@@ -1,6 +1,64 @@
-﻿<h3>Bazen</h3>
-<p>Za odmor, tu idu slikice</p>
+﻿@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using BlazorInputFile
+@using System.IO
+
+@inherits OwningComponentBase<ImgUploadService>
+
+<hr />
+
+
+@foreach (var imgshow in imgdispobj)
+{
+    if (imgshow.Types == ImageLists.RoomType.Bazen)
+    {
+        <figure class="figure">
+            <img src="@convertImageForGallery(imgshow.Image)" class="img-thumbnail figure-img" width="300px" alt="@imgshow.ImageName">
+            <figcaption class="figure-caption">@imgshow.ImageName</figcaption>
+        </figure>
+    }
+}
+
+@*<table>
+        <tr>
+            <th>Image id</th>
+            <th>Image Name</th>
+            <th>Image</th>
+        </tr>
+        @foreach(var imgshow in imgdispobj)
+                {
+                   if(imgshow.Types == ImageLists.RoomType.Bazen)
+                   {
+                    <tr>
+                        <td>@imgshow.ImgId</td>
+                        <td>@imgshow.ImageName</td>
+                        <th><img src="@convertImageForGallery(imgshow.Image)" width="200px;" /></th>
+                    </tr>
+                    }
+                }
+    </table>
+*@
+
 
 @code {
+
+    List<ImageLists> imgdispobj;
+
+    protected override void OnInitialized()
+    {
+        imgdispobj = Service.displayImage();
+    }
+
+    string convertImageForGallery(byte[] image)
+    {
+        if (image != null)
+        {
+            var base64 = Convert.ToBase64String(image);
+            var fs = string.Format("data:image/jpg;base64,{0}", base64);
+            return fs;
+        }
+        return "";
+    }
+
 
 }
