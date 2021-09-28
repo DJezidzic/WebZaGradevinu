@@ -17,14 +17,24 @@
         }
 
     }
-    <button class="btn btn-secondary" @onclick="@NavigateToCounterComponent">Upload Images</button>
+    <button class="btn btn-secondary" @onclick="@NavigateToImageUpload">Upload Images</button>
 
 </div>
+@if (isLoaded)
+{
+    @GetRenderFragment(types[selected])
+}
 
-@GetRenderFragment(types[selected])
+else
+{
+<div class="spinner"></div>
+}
+
+
 
 @code {
 
+    bool isLoaded;
     RenderFragment GetRenderFragment(Type type)
     {
         RenderFragment renderFragment = renderTreeBuilder =>
@@ -35,10 +45,16 @@
         return renderFragment;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(2000); // TODO actual initialization job
+        isLoaded = true;
+    }
+
     int selected;
     ComponentBase[] components = { new Bazen(), new Kupaona(), new Ostalo() };
     Type[] types => components.Select(c => c.GetType()).ToArray();
 
-    private void NavigateToCounterComponent() { NavigationManager.NavigateTo("ImageUpload"); }
+    private void NavigateToImageUpload() { NavigationManager.NavigateTo("ImageUpload"); }
 
 }

@@ -1,0 +1,63 @@
+﻿@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+
+
+
+
+@inherits OwningComponentBase<ImgUploadService>
+
+<div class="modal fade show" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog" style="width:1200px;height:1200px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Title</h4>
+                <button type="button" class="close" data-dismiss="modal" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;">
+                <div class="container-fluid">
+                    <img id="imagepreview" src="@convertImageForGallery(imgdispobj.Where(x=> x.ImgId == ImageId).Select(x=>x.Image).FirstOrDefault())" style=" max-width:650px;max-height:650px; image-orientation: from-image;" class="center">
+                </div>
+                 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" @onclick="@ModalCancel">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public int ImageId { get; set; }
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    private Task ModalCancel()
+    {
+        return OnClose.InvokeAsync(false);
+    }
+
+    List<ImageLists> imgdispobj;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    protected override void OnInitialized()
+    {
+        imgdispobj = Service.displayImage();
+    }
+
+    string convertImageForGallery(byte[] image)
+    {
+        if (image != null)
+        {
+            var base64 = Convert.ToBase64String(image);
+            var fs = string.Format("data:image/jpg;base64,{0}", base64);
+            return fs;
+        }
+        return "";
+    }
+}

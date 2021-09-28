@@ -1,7 +1,5 @@
 ﻿@using WebZaGradevinu.Data
 @using WebZaGradevinu.Services
-@using BlazorInputFile
-@using System.IO
 
 @inherits OwningComponentBase<ImgUploadService>
 <hr />
@@ -11,15 +9,36 @@
     if (imgshow.Types == ImageLists.RoomType.Kupaona)
     {
         <figure class="figure">
-            <img src="@convertImageForGallery(imgshow.Image)" class="img-thumbnail figure-img" width="300px" alt="@imgshow.ImageName">
+            <img src="@convertImageForGallery(imgshow.Image)" @onclick="() => ShowModalImg(imgshow) " class="img-thumbnail figure-img" id="myImg" style=" max-width:370px;max-height:430px;" alt="@imgshow.ImageName">
             <figcaption class="figure-caption">@imgshow.ImageName</figcaption>
         </figure>
     }
+}
+@if (ImgShowToModal)
+{
+    <ModalComp ImageId="@idImg" Title="@imgTitle" OnClose="@OnModalClose"></ModalComp>
 }
 
 
 
 @code {
+
+    bool ImgShowToModal = false;
+    int idImg;
+    string imgTitle;
+    void ShowModalImg(ImageLists img)
+    {
+        idImg = img.ImgId;
+        imgTitle = img.ImageName;
+        ImgShowToModal = true;
+
+    }
+
+    private async Task OnModalClose(bool accepted)
+    {
+        ImgShowToModal = false;
+        StateHasChanged();
+    }
 
     List<ImageLists> imgdispobj;
 
