@@ -1,0 +1,57 @@
+﻿@page "/NewOffer"
+@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using System.IO
+@inherits OwningComponentBase<JobsService>
+@*@using Microsoft.AspNetCore.Components.Authorization
+    @inject AuthenticationStateProvider AuthenticationStateProvider*@
+
+
+<h3>Nova ponuda</h3>
+
+<EditForm Model="@jobs" OnValidSubmit="HandleValidSubmit">
+    
+    <div class="form-group">
+        <label for="imeprijedloga" class="control-label">Ime poslovnog prijedloga</label>
+        <InputText id="imeprijedloga" @bind-Value="jobs.Name"></InputText><br />
+    </div>
+    <div class="form-group">
+        <label for="pocetakrad" class="control-label">Pocetak radova</label>
+        <InputDate @bind-Value="jobs.PocetakRadova" id="pocetakrad"></InputDate><br />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="descrip">Kratki opis posla</label>
+        <InputText id="descrip" @bind-Value="jobs.Description"></InputText><br />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="sobe">Soba potrebna za radit</label>
+        <InputSelect id="sobe" @bind-Value="jobs.Rooms">
+            <br />
+            <option value="">Select item</option>
+            <option value="0">Bazen</option>
+            <option value="1">Kupaona</option>
+            <option value="2">Ostalo</option>
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="widedescrip">Širok opis posla</label>
+        <InputTextArea id="widedescrip" @bind-Value="jobs.WideDescription"></InputTextArea><br />
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Spremi" class="btn btn-outline-primary" />
+    </div>
+    
+</EditForm>
+
+
+@code {
+
+    private Jobs jobs = new Jobs();
+
+    private async void HandleValidSubmit()
+    {
+        await Service.OnNewOfferCreate(jobs);   //Treba još poslat korisnika
+    }
+
+}

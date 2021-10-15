@@ -3,25 +3,53 @@
 @using WebZaGradevinu.Services
 @using BlazorInputFile
 @using System.IO
- 
+
 @inherits OwningComponentBase<ImgUploadService>
 
 <h3>ImageUpload</h3>
-<hr/>
+<hr />
+
+<MudBreadcrumbs Items="_items">
+</MudBreadcrumbs>
 
 <EditForm Model="@imglistobj" OnValidSubmit="@VSubmit">
-    
-    ImageName:<input type="text" @bind="@imglistobj.ImageName"/>
+
+    ImageName: <input type="text" @bind="@imglistobj.ImageName" />
     <InputSelect @bind-Value="@imglistobj.Types">
-        @foreach(var room in Enum.GetValues(typeof(ImageLists.RoomType)))
-                    {
-                        <option value="@room">@room</option>
-                    }
+        @foreach (var room in Enum.GetValues(typeof(ImageLists.RoomType)))
+        {
+            <option value="@room">@room</option>
+        }
     </InputSelect>
     <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
-    <button type="submit">Insert</button>
+    <button type="submit" class="btn btn-success">Insert</button>
 
 </EditForm>
+
+<br />
+
+<table>
+    <thead>
+        <tr>
+            <th>Image name</th>
+            <th>Type</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var img in imgListTab)
+        {
+            <tr>
+                <td>@img.ImageName</td>
+                <td>@img.Types</td>
+                <td>
+                    <button class="btn btn-danger" type="button" @onclick="(() => OnDeleteImage(img.ImgId))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 
 
@@ -29,14 +57,29 @@
 
 @code {
 
+    private List <BreadcrumbItem> _items = new List<BreadcrumbItem> {  
+    new BreadcrumbItem("Home", href: "/"),  
+    new BreadcrumbItem("Galerija", href: "/slikePoslova"),  
+    new BreadcrumbItem("Image Upload", href: "/ImageUpload")
+    };
+
     ImageLists imglistobj = new ImageLists();
+    List<ImageLists> imgListTab;
     public byte[] imguploadobj { get; set; }
+
+    protected async Task OnDeleteImage(int id)
+    {
+        await Service.OnDelete(id);
+        imgListTab = Service.displayImage();
+    }
 
     void VSubmit()
     {
         imglistobj.ImgId = 0;
         imglistobj.Image = imguploadobj;
         Service.UploadImg(imglistobj);
+        imgListTab = Service.displayImage();
+
     }
 
     async Task HandleFileSelected(IFileListEntry[] files)
@@ -48,6 +91,11 @@
             await file.Data.CopyToAsync(memstrm);
             imguploadobj = memstrm.ToArray();
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        imgListTab = Service.displayImage();
     }
 
 }

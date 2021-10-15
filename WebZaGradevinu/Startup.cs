@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WebZaGradevinu.Data;
 using Microsoft.EntityFrameworkCore;
 using WebZaGradevinu.Services;
+using MudBlazor.Services;
 
 namespace WebZaGradevinu
 {
@@ -33,6 +34,8 @@ namespace WebZaGradevinu
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<ImgUploadService>();
+            services.AddMudServices();
+            services.AddScoped<JobsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -14,6 +14,7 @@ namespace WebZaGradevinu.Data
         public WebAppDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<ImageLists> ImageListing { get; set; }
+        public DbSet<Jobs> JobsListing { get; set; }
 
     }
 }

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebZaGradevinu.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace WebZaGradevinu.Services
 {
@@ -24,6 +29,20 @@ namespace WebZaGradevinu.Services
         public List<ImageLists> displayImage()
         {
             return _dbcontext.ImageListing.ToList();
+        }
+
+        public async Task OnDelete(int imgid)
+        {
+            var imgselected = await _dbcontext.ImageListing.FindAsync(imgid);
+            try
+            {
+                _dbcontext.ImageListing.Remove(imgselected);
+                await _dbcontext.SaveChangesAsync(); 
+            }
+            catch (Exception)
+            {
+                throw;
+            }    
         }
 
     }

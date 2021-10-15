@@ -5,23 +5,25 @@
 
 <hr />
 
-
-
-@foreach (var imgshow in imgdispobj)
-{
-    if (imgshow.Types == ImageLists.RoomType.Bazen)
+<div class="content">
+    @foreach (var imgshow in imgdispobj)
     {
-        <figure class="figure">
-            <img src="@convertImageForGallery(imgshow.Image)" @onclick="() => ShowModalImg(imgshow) " class="img-thumbnail figure-img" id="myImg" style=" max-width:370px;max-height:430px;" alt="@imgshow.ImageName">
-            <figcaption class="figure-caption">@imgshow.ImageName</figcaption>
-        </figure>
+        if (imgshow.Types == ImageLists.RoomType.Bazen)
+        {
+            <figure class="figure">
+                <img src="@convertImageForGallery(imgshow.Image)" @onclick="() => ShowModalImg(imgshow) " class="img-thumbnail figure-img" id="myImg" style=" max-width:370px;max-height:430px;" alt="@imgshow.ImageName">
+                <figcaption class="figure-caption">@imgshow.ImageName</figcaption>
+            </figure>
+        }
     }
-}
 
-@if(ImgShowToModal)
-{
-    <ModalComp ImageId="@idImg" Title="@imgTitle" OnClose="@OnModalClose"></ModalComp>
-}
+    @if (ImgShowToModal)
+    {
+        <ModalComp ImageId="@idImg" Title="@imgTitle" OnClose="@OnModalClose"></ModalComp>
+    }
+</div>
+
+
 
 @*<table>
         <tr>

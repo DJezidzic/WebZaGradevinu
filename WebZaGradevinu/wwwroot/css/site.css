@@ -4,10 +4,6 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
