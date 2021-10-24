@@ -1,0 +1,97 @@
+﻿@page "/AcceptedJobsPage"
+@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@inherits OwningComponentBase<JobsService>
+@inject ToastService toastService
+<h3>Prihvaćeni poslovi</h3>
+<hr />
+
+<MudBreadcrumbs Items="_items">
+</MudBreadcrumbs>
+
+<table style="margin-top: 20px; color:aliceblue;" class="table table-condensed" id="tbl-companies">
+    <thead>
+        <tr>
+            <th>Naziv posla</th>
+            <th>Vrijeme prihvata posla</th>
+            <th>Status posla</th>
+            <th>Vrijeme završetka posla</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var jobs in jobload)
+        {
+            <tr>
+                <td>@jobs.Jobs.Name</td>
+                <td>@jobs.AcceptedTime</td>
+                @if (jobs.JobisFinished == true)
+                {
+                    <td>Završen</td>
+                }
+                else
+                {
+                    <td>Nije završen</td>
+                }
+                @if (jobs.JobisFinished == true)
+                {
+                    <td>@jobs.FinishedTime</td>
+                }
+                else
+                {
+                    <td>Neodređeno</td>
+                }
+                @if (jobs.JobisFinished == false)
+                {
+                    <td>
+                        <button class="btn btn-success"><i class="oi oi-check" @onclick="()=> FinishTheJob(jobs)"></i>Završi posao</button>
+                    </td>
+                }
+                @if(jobs.JobisFinished == false)
+                {
+                    <td>
+                        <button class="btn btn-danger"><i class="oi oi-delete" @onclick="()=> DeleteJobFromFinishedList(jobs)"></i>Ukloni posao</button>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@code {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
+    new BreadcrumbItem("Poslovi", href: "/Poslovi"),
+    new BreadcrumbItem("Prihvaćeni poslovi", href: "/AcceptedJobsPage"),
+    };
+
+    public string UserName;
+    List<AcceptedJobs> jobload;
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+    }
+    protected override void OnInitialized()
+    {
+        jobload = Service.GetAcceptedJobsList(UserName);
+    }
+
+    void FinishTheJob(AcceptedJobs accjob)
+    {
+        Service.FinishJob(accjob);
+        toastService.ShowToast("Uspješno ste ažurirali tablicu", ToastLevel.Success);
+        jobload = Service.GetAcceptedJobsList(UserName);
+    }
+
+    void DeleteJobFromFinishedList(AcceptedJobs accjob)
+    {
+        Service.DeleteFinishListJob(accjob);
+        toastService.ShowToast("Uspješno ste ukonili posao sa liste", ToastLevel.Success);
+        jobload = Service.GetAcceptedJobsList(UserName);
+    }
+
+}

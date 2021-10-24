@@ -13,6 +13,9 @@ using WebZaGradevinu.Data;
 using Microsoft.EntityFrameworkCore;
 using WebZaGradevinu.Services;
 using MudBlazor.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using WebZaGradevinu.Areas.Identity;
 
 namespace WebZaGradevinu
 {
@@ -31,11 +34,16 @@ namespace WebZaGradevinu
         {
             services.AddDbContext<WebAppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WebAppDbContext")));
             services.AddRazorPages();
+            services.AddHttpContextAccessor();
+            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<WebAppDbContext>();
+            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<AppUser>>();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<ImgUploadService>();
             services.AddMudServices();
             services.AddScoped<JobsService>();
+            services.AddScoped<ToastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,9 +64,11 @@ namespace WebZaGradevinu
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

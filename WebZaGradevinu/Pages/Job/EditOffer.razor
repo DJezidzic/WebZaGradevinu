@@ -1,0 +1,98 @@
+﻿@page "/EditOffer/{id}"
+@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using System.IO
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@inherits OwningComponentBase<JobsService>
+@*@using Microsoft.AspNetCore.Components.Authorization
+    @inject AuthenticationStateProvider AuthenticationStateProvider*@
+
+
+<h3>Dorada @jobload.Name</h3>
+
+<EditForm Model="@jobload" OnValidSubmit="HandleValidSubmit">
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="imeprijedloga" class="control-label">Ime poslovnog prijedloga</label>
+        <InputText id="imeprijedloga" @bind-Value="jobload.Name"></InputText><br />
+        <ValidationMessage For="@(() => jobload.Name)" />
+    </div>
+    <div class="form-group">
+        <label for="pocetakrad" class="control-label">Pocetak radova</label>
+        <InputDate @bind-Value="jobload.PocetakRadova" id="pocetakrad"></InputDate><br />
+        <ValidationMessage For="@(() => jobload.PocetakRadova)" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="descrip">Kratki opis posla</label>
+        <InputText id="descrip" @bind-Value="jobload.Description"></InputText><br />
+        <ValidationMessage For="@(() => jobload.Description)" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="adresa">Adresa posla:</label>
+        <InputText id="adresa" @bind-Value="jobload.Adresa"></InputText><br />
+        <ValidationMessage For="@(() => jobload.Adresa)" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="grad">Grad:</label>
+        <InputSelect id="grad" @bind-Value="jobload.CityId">
+            <br />
+            <option selected disabled="true">-- Odaberite Grad --</option>
+            @foreach (var grad in cities)
+            {
+                <option value="@grad.ID">@grad.Name</option>
+            }
+
+        </InputSelect>
+        <ValidationMessage For="@(() => jobload.CityId)" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="sobe">Soba potrebna za radit</label>
+        <InputSelect id="sobe" @bind-Value="jobload.Rooms">
+            <br />
+            <option selected disabled="true">-- Izaberite sobu --</option>
+            <option value="0">Bazen</option>
+            <option value="1">Kupaona</option>
+            <option value="2">Ostalo</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => jobload.Rooms)" />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="widedescrip">Širok opis posla</label>
+        <InputTextArea id="widedescrip" @bind-Value="jobload.WideDescription"></InputTextArea><br />
+        <ValidationMessage For="@(() => jobload.WideDescription)" />
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Spremi" class="btn btn-outline-primary" />
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public int JobId { get; set; }
+
+    private Jobs jobload = new Jobs();
+    List<City> cities;
+    public string UserName;
+    protected override void OnInitialized()
+    {
+        cities = Service.GetCities();
+        jobload = Service.GetJobForEdit(JobId);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Service.OnEditOffer(jobload);   
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+    }
+
+
+}

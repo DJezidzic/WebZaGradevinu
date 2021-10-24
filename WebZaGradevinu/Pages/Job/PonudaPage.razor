@@ -1,7 +1,10 @@
 ﻿@using WebZaGradevinu.Data
 @using WebZaGradevinu.Services
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<JobsService>
+@inject ToastService toastService
 
 <hr />
 
@@ -17,6 +20,7 @@
             <th>Opis</th>
             <th>Ime tvrtke</th>
             <th>Posao</th>
+            <th>Pocetak radova</th>
             <th></th>
         </tr>
     </thead>
@@ -35,7 +39,11 @@
                     <p style=" color:aliceblue;">@item.Name</p>
                 </td>
                 <td>
-                    <button class="btn btn-link" onclick="OnClick(event)" style=" color:aliceblue;">[edit]</button>
+                    <p style=" color:aliceblue;">@item.PocetakRadova</p>
+                </td>
+                <td>
+                    @*Napravit novu model klasu gdje se nalaze prihvaćeni poslovi, ako je prhvaćen onemogućit brisanje posla*@
+                    <button class="btn btn-success"><i class="oi oi-check" @onclick="()=> AcceptJobFunction(item)"></i>Prihvaćam</button>
                 </td>
             </tr>
         }
@@ -44,21 +52,38 @@
 
 @if (WideDescripShowToModal)
 {
-    <ModalCompJob WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
+    <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
 }
 
 @code {
 
     private void NavigateToNewOffer() { NavigationManager.NavigateTo("NewOffer"); }
     List<Jobs> jobload;
+    public string UserName;
 
     bool WideDescripShowToModal = false;
     string wideDescrip;
+    string modaladress;
+    int modalgrad;
+
+    void AcceptJobFunction(Jobs job)
+    {
+        Service.AcceptJob(job, UserName);
+        toastService.ShowToast("Uspješno ste dodali posao na listu", ToastLevel.Success) ;
+        jobload = Service.displayJobs(UserName);
+
+    }
+
     void ShowModalJobDescrip(Jobs job)
     {
         wideDescrip = job.WideDescription;
+        modaladress = job.Adresa;
+        modalgrad = job.CityId;
         WideDescripShowToModal = true;
-
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
     }
 
     private async Task OnModalClose(bool accepted)
@@ -69,7 +94,7 @@
 
     protected override void OnInitialized()
     {
-        jobload = Service.displayJobs();
+        jobload = Service.displayJobs(UserName);
     }
 
 }

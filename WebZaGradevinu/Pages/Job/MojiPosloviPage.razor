@@ -1,6 +1,99 @@
-﻿<hr />
+﻿@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@inject NavigationManager NavigationManager
+@inherits OwningComponentBase<JobsService>
 
+<hr />
+
+<div class="row" style="margin-top: 20px;">
+    <div class="col-md-12">
+        <button class="btn btn-outline-primary" @onclick="@NavigateToNewOffer"><i class="oi oi-plus"></i>Dodaj novi posao</button>
+    </div>
+</div>
+<table style="margin-top: 20px; color:aliceblue;" class="table table-condensed" id="tbl-companies">
+    <thead>
+        <tr>
+            <th>Prostorija</th>
+            <th>Opis</th>
+            <th>Ime tvrtke</th>
+            <th>Posao</th>
+            <th>Pocetak radova</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in jobload)
+        {
+            <tr>
+                <td>@item.Rooms</td>
+                <td>
+                    <a style=" color:aliceblue;" @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
+                </td>
+                <td>
+                    <p style=" color:aliceblue;">@item.Company.NazivTvrtke</p>
+                </td>
+                <td>
+                    <p style=" color:aliceblue;">@item.Name</p>
+                </td>
+                <td>
+                    <p style=" color:aliceblue;">@item.PocetakRadova</p>
+                </td>
+                <td>
+                    <button class="btn btn-link" @onclick="()=> NavigateToEditOffer(item.ID) " style=" color:aliceblue;">[Edit]</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" type="button" @onclick="(() => OnDeleteJob(item.ID))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (WideDescripShowToModal)
+{
+    <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
+}
 
 @code {
+
+    private void NavigateToNewOffer() { NavigationManager.NavigateTo("NewOffer"); }
+    private void NavigateToEditOffer(int id) { NavigationManager.NavigateTo("EditOffer" + "/" + id); }
+    List<Jobs> jobload;
+    public string UserName;
+
+    bool WideDescripShowToModal = false;
+    string wideDescrip;
+    string modaladress;
+    int modalgrad;
+    void ShowModalJobDescrip(Jobs job)
+    {
+        wideDescrip = job.WideDescription;
+        modaladress = job.Adresa;
+        modalgrad = job.CityId;
+        WideDescripShowToModal = true;
+    }
+    protected async Task OnDeleteJob(int id)
+    {
+        await Service.OnDelete(id);
+        jobload = Service.DisplayMyJobs(UserName);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+    }
+
+    private async Task OnModalClose(bool accepted)
+    {
+        WideDescripShowToModal = false;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        jobload = Service.DisplayMyJobs(UserName);
+    }
 
 }

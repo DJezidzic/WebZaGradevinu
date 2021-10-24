@@ -10,14 +10,19 @@ namespace WebZaGradevinu.Data
         
         public int ID { get; set; }
         public string Adresa { get; set; }
+        [Required]
         public string NazivTvrtke { get; set; }
+        [Required]
         public string Email { get; set; }
+        [Required]
         public string OIB { get; set; }
         public string PhoneNumber { get; set; }
         [ForeignKey(nameof(City))]
         public int? CityId { get; set; }
-        public City City { get; set; }
+        public virtual City City { get; set; }
 
+        public virtual AcceptedJobs AcceptedJobs { get; set; }
+        
         public virtual ICollection<Jobs> Jobs { get; set; }
         
     }

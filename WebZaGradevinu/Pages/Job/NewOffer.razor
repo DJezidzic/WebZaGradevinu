@@ -2,6 +2,8 @@
 @using WebZaGradevinu.Data
 @using WebZaGradevinu.Services
 @using System.IO
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
 @inherits OwningComponentBase<JobsService>
 @*@using Microsoft.AspNetCore.Components.Authorization
     @inject AuthenticationStateProvider AuthenticationStateProvider*@
@@ -10,7 +12,7 @@
 <h3>Nova ponuda</h3>
 
 <EditForm Model="@jobs" OnValidSubmit="HandleValidSubmit">
-    
+
     <div class="form-group">
         <label for="imeprijedloga" class="control-label">Ime poslovnog prijedloga</label>
         <InputText id="imeprijedloga" @bind-Value="jobs.Name"></InputText><br />
@@ -24,10 +26,26 @@
         <InputText id="descrip" @bind-Value="jobs.Description"></InputText><br />
     </div>
     <div class="form-group">
+        <label class="control-label" for="adresa">Adresa posla:</label>
+        <InputText id="adresa" @bind-Value="jobs.Adresa"></InputText><br />
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="grad">Grad:</label>
+        <InputSelect id="grad" @bind-Value="jobs.CityId">
+            <br />
+            <option selected disabled="true">-- Odaberite Grad --</option>
+            @foreach (var grad in cities)
+            {
+                <option value="@grad.ID">@grad.Name</option>
+            }
+
+        </InputSelect>
+    </div>
+    <div class="form-group">
         <label class="control-label" for="sobe">Soba potrebna za radit</label>
         <InputSelect id="sobe" @bind-Value="jobs.Rooms">
             <br />
-            <option value="">Select item</option>
+            <option selected disabled="true">-- Izaberite sobu --</option>
             <option value="0">Bazen</option>
             <option value="1">Kupaona</option>
             <option value="2">Ostalo</option>
@@ -41,17 +59,28 @@
     <div class="form-group">
         <input type="submit" value="Spremi" class="btn btn-outline-primary" />
     </div>
-    
+
 </EditForm>
 
 
 @code {
 
     private Jobs jobs = new Jobs();
-
-    private async void HandleValidSubmit()
+    List<City> cities;
+    public string UserName;
+    protected override void OnInitialized()
     {
-        await Service.OnNewOfferCreate(jobs);   //Treba još poslat korisnika
+        cities = Service.GetCities();
     }
+
+    private async Task HandleValidSubmit()
+    {
+        await Service.OnNewOfferCreate(jobs, UserName);   //Treba još poslat korisnika=>riješeno
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+    }
+
 
 }

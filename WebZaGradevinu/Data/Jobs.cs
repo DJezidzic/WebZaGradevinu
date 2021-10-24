@@ -28,11 +28,18 @@ namespace WebZaGradevinu.Data
         [Required]
         public bool AktivanOglas { get; set; }
 
+        public string Adresa { get; set; }
+        [ForeignKey(nameof(City))]
+        public int CityId { get; set; }
+        public virtual City City { get; set; }
+
         [ForeignKey(nameof(Company))]
         public int CompanyId { get; set; }
         public Company Company { get; set; }
         [Required]
         public Room Rooms { get; set; }
+
+        public virtual AcceptedJobs AcceptedJobs { get; set; }
 
     }
 }

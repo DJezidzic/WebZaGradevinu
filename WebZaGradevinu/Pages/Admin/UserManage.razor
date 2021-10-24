@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@using WebZaGradevinu.Data 
+@inject UserManager<AppUser> _UserManager
+@inject RoleManager<IdentityRole> _RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+
+
+<h3>UserManage</h3>
+
+@code {
+    /// <summary>
+    /// Onemogućit automatsko stvaranje Usera, pa sredit admin dodavnje i onda vratit User role dodavanje
+    /// </summary>
+}

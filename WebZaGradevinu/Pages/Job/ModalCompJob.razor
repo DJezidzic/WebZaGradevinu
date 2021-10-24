@@ -11,7 +11,10 @@
             </div>
             <div class="modal-body" style="display:flex;">
                 <div class="container-fluid">
-                    <p>@WideDescrip</p>
+                    <p>@WideDescrip</p><br />
+                    <p>@modaladress</p><br />
+                    <p>@grad.Where(x => x.ID == modalgrad).Select(y => y.Name).FirstOrDefault()</p>
+
                 </div>
                  
             </div>
@@ -26,10 +29,20 @@
     public string WideDescrip { get; set; }
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
+    [Parameter]
+    public string modaladress { get; set; }
+    [Parameter]
+    public int modalgrad { get; set; }
+
+    List<City> grad;
 
     private Task ModalCancel()
     {
         return OnClose.InvokeAsync(false);
+    }
+    protected override void OnInitialized()
+    {
+        grad = Service.GetCities();
     }
 
 
