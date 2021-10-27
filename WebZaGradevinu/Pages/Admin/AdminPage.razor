@@ -1,14 +1,18 @@
 ﻿@page "/AdminPage"
-
-<h3>AdminPage</h3>
-<hr />
+@attribute [Authorize(Roles ="Admin")]
 
 <TabControl>
     <TabPage Text="Dodavanje slika">
+        <br />
         <WebZaGradevinu.Pages.Home.ImageUpload />
     </TabPage>
-    <TabPage Text="Moji Poslovi">
+    <TabPage Text="Upravljanje korisnicima">
+        <br />
         <UserManage />
+    </TabPage>
+    <TabPage Text="Upravljanje ulogama">
+        <br />
+        <RoleManage/>
     </TabPage>
 </TabControl>
 

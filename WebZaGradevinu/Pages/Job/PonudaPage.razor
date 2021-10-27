@@ -5,6 +5,7 @@
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<JobsService>
 @inject ToastService toastService
+@attribute [Authorize(Roles = "Admin,User")]
 
 <hr />
 
@@ -13,47 +14,52 @@
         <button class="btn btn-outline-primary" @onclick="@NavigateToNewOffer"><i class="oi oi-plus"></i>Dodaj novi posao</button>
     </div>
 </div>
-<table style="margin-top: 20px; color:aliceblue;" class="table table-condensed" id="tbl-companies">
-    <thead>
-        <tr>
-            <th>Prostorija</th>
-            <th>Opis</th>
-            <th>Ime tvrtke</th>
-            <th>Posao</th>
-            <th>Pocetak radova</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in jobload)
-        {
+@if (jobload != null)
+{<table style="margin-top: 20px;" class="table table-condensed" id="tbl-companies">
+        <thead>
             <tr>
-                <td>@item.Rooms</td>
-                <td>
-                    <a style=" color:aliceblue;" @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
-                </td>
-                <td>
-                    <p style=" color:aliceblue;">@item.Company.NazivTvrtke</p>
-                </td>
-                <td>
-                    <p style=" color:aliceblue;">@item.Name</p>
-                </td>
-                <td>
-                    <p style=" color:aliceblue;">@item.PocetakRadova</p>
-                </td>
-                <td>
-                    @*Napravit novu model klasu gdje se nalaze prihvaćeni poslovi, ako je prhvaćen onemogućit brisanje posla*@
-                    <button class="btn btn-success"><i class="oi oi-check" @onclick="()=> AcceptJobFunction(item)"></i>Prihvaćam</button>
-                </td>
+                <th>Prostorija</th>
+                <th>Opis</th>
+                <th>Ime tvrtke</th>
+                <th>Posao</th>
+                <th>Pocetak radova</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in jobload)
+            {
+                <tr>
+                    <td>@item.Rooms</td>
+                    <td>
+                        <a @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
+                    </td>
+                    <td>
+                        <p>@item.Company.NazivTvrtke</p>
+                    </td>
+                    <td>
+                        <p>@item.Name</p>
+                    </td>
+                    <td>
+                        <p>@item.PocetakRadova.ToLongDateString()</p>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" @onclick="()=> AcceptJobFunction(item)"><i class="oi oi-check"></i>Prihvaćam</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-@if (WideDescripShowToModal)
-{
-    <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
+    @if (WideDescripShowToModal)
+    {
+        <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
+    }
+
 }
+else
+{ <div class="loader"></div>}
+
 
 @code {
 
@@ -66,11 +72,11 @@
     string modaladress;
     int modalgrad;
 
-    void AcceptJobFunction(Jobs job)
+    private async Task AcceptJobFunction(Jobs job)
     {
-        Service.AcceptJob(job, UserName);
-        toastService.ShowToast("Uspješno ste dodali posao na listu", ToastLevel.Success) ;
-        jobload = Service.displayJobs(UserName);
+        await Service.AcceptJob(job, UserName);
+        toastService.ShowToast("Uspješno ste dodali posao na listu", ToastLevel.Success);
+        jobload = Service.DisplayJobs(UserName);
 
     }
 
@@ -84,17 +90,14 @@
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        jobload = Service.DisplayJobs(UserName);
+        // Potrebno je sve jobload premjestit u OnInitializedAsync jer se pokreće nakon OnInitialized
     }
 
     private async Task OnModalClose(bool accepted)
     {
         WideDescripShowToModal = false;
         StateHasChanged();
-    }
-
-    protected override void OnInitialized()
-    {
-        jobload = Service.displayJobs(UserName);
     }
 
 }

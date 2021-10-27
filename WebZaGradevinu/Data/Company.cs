@@ -7,12 +7,11 @@ namespace WebZaGradevinu.Data
 {
     public class Company
     {
-        
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Adresa { get; set; }
         [Required]
         public string NazivTvrtke { get; set; }
-        [Required]
+        
         public string Email { get; set; }
         [Required]
         public string OIB { get; set; }
@@ -21,7 +20,7 @@ namespace WebZaGradevinu.Data
         public int? CityId { get; set; }
         public virtual City City { get; set; }
 
-        public virtual AcceptedJobs AcceptedJobs { get; set; }
+        public virtual ICollection<AcceptedJobs> AcceptedJobs { get; set; }
         
         public virtual ICollection<Jobs> Jobs { get; set; }
         

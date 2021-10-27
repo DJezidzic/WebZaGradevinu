@@ -5,61 +5,69 @@
 @inject IHttpContextAccessor httpContextAccessor
 @inherits OwningComponentBase<JobsService>
 @inject ToastService toastService
+@attribute [Authorize(Roles = "Admin,User")]
 <h3>Prihvaćeni poslovi</h3>
 <hr />
 
 <MudBreadcrumbs Items="_items">
 </MudBreadcrumbs>
 
-<table style="margin-top: 20px; color:aliceblue;" class="table table-condensed" id="tbl-companies">
-    <thead>
-        <tr>
-            <th>Naziv posla</th>
-            <th>Vrijeme prihvata posla</th>
-            <th>Status posla</th>
-            <th>Vrijeme završetka posla</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var jobs in jobload)
-        {
+@if (jobload != null)
+{<table style="margin-top: 20px;" class="table table-condensed" id="tbl-companies">
+        <thead>
             <tr>
-                <td>@jobs.Jobs.Name</td>
-                <td>@jobs.AcceptedTime</td>
-                @if (jobs.JobisFinished == true)
-                {
-                    <td>Završen</td>
-                }
-                else
-                {
-                    <td>Nije završen</td>
-                }
-                @if (jobs.JobisFinished == true)
-                {
-                    <td>@jobs.FinishedTime</td>
-                }
-                else
-                {
-                    <td>Neodređeno</td>
-                }
-                @if (jobs.JobisFinished == false)
-                {
-                    <td>
-                        <button class="btn btn-success"><i class="oi oi-check" @onclick="()=> FinishTheJob(jobs)"></i>Završi posao</button>
-                    </td>
-                }
-                @if(jobs.JobisFinished == false)
-                {
-                    <td>
-                        <button class="btn btn-danger"><i class="oi oi-delete" @onclick="()=> DeleteJobFromFinishedList(jobs)"></i>Ukloni posao</button>
-                    </td>
-                }
+                <th>Naziv posla</th>
+                <th>Vrijeme prihvata posla</th>
+                <th>Status posla</th>
+                <th>Vrijeme završetka posla</th>
+                <th></th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var jobs in jobload)
+            {
+                <tr>
+                    <td>@jobs.Jobs.Name</td>
+                    <td>@jobs.AcceptedTime</td>
+                    @if (jobs.JobisFinished == true)
+                    {
+                        <td>Završen</td>
+                    }
+                    else
+                    {
+                        <td>Nije završen</td>
+                    }
+                    @if (jobs.JobisFinished == true)
+                    {
+                        <td>@jobs.FinishedTime</td>
+                    }
+                    else
+                    {
+                        <td>Neodređeno</td>
+                    }
+                    @if (jobs.JobisFinished == false)
+                    {
+                        <td>
+                            <button type="button" class="btn btn-success" @onclick="() => FinishTheJob(jobs.Id)"><i class="oi oi-check"></i>Završi posao</button>
+                        </td>
+                    }
+                    @if (jobs.JobisFinished == false)
+                    {
+                        <td>
+                            <button type="button" class="btn btn-danger" @onclick="() => DeleteJobFromFinishedList(jobs)"><i class="oi oi-delete"></i>Ukloni posao</button>
+                        </td>
+                    }
+                </tr>
+            }
+
+
+
+        </tbody>
+    </table>
+}
+else
+{ <p>Trenutno nemate poslova na kojim ste započeli radove.</p>}
 
 
 
@@ -74,22 +82,19 @@
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-    }
-    protected override void OnInitialized()
-    {
         jobload = Service.GetAcceptedJobsList(UserName);
     }
 
-    void FinishTheJob(AcceptedJobs accjob)
+    public async Task FinishTheJob(int id)
     {
-        Service.FinishJob(accjob);
+        await Service.FinishJob(id);
         toastService.ShowToast("Uspješno ste ažurirali tablicu", ToastLevel.Success);
         jobload = Service.GetAcceptedJobsList(UserName);
     }
 
-    void DeleteJobFromFinishedList(AcceptedJobs accjob)
+    public async Task DeleteJobFromFinishedList(AcceptedJobs accjob)
     {
-        Service.DeleteFinishListJob(accjob);
+        await Service.DeleteFinishListJob(accjob);
         toastService.ShowToast("Uspješno ste ukonili posao sa liste", ToastLevel.Success);
         jobload = Service.GetAcceptedJobsList(UserName);
     }

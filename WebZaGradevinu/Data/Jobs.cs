@@ -39,7 +39,7 @@ namespace WebZaGradevinu.Data
         [Required]
         public Room Rooms { get; set; }
 
-        public virtual AcceptedJobs AcceptedJobs { get; set; }
+        public virtual ICollection<AcceptedJobs> AcceptedJobs { get; set; }
 
     }
 }

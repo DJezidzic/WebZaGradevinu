@@ -6,28 +6,39 @@
 }
 
 <h4>@ViewData["Title"]</h4>
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div class="form-group">
-                <label asp-for="Output.NazivPosla"></label>
-                <input asp-for="Output.NazivPosla" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="Output.Adresa"></label>
-                <input asp-for="Output.Adresa" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="Output.Grad"></label>
-                <input asp-for="Output.Grad" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="Output.Opis"></label>
-                <input asp-for="Output.Opis" class="form-control" disabled />
-            </div>
-        </form>
-    </div>
-</div>
+
+@if (Model.Job != null)
+{
+    <table class="table table-condensed" id="tbl-companies">
+        <thead>
+            <tr>
+                <th>Naziv Posla</th>
+                <th>Grad</th>
+                <th>Adresa</th>
+                <th>Opis</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model.Job)
+            {
+                <tr>
+                    <td><p>@item.Name</p></td>
+                    <td>
+                        @item.City
+                    </td>
+                    <td>
+                        <p>@item.Adresa</p>
+                    </td>
+                    <td>
+                        <p>@item.Description</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

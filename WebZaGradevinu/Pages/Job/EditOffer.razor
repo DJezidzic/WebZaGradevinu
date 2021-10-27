@@ -1,9 +1,10 @@
-﻿@page "/EditOffer/{id}"
+﻿@page "/Poslovi/EditOffer/{id}"
 @using WebZaGradevinu.Data
 @using WebZaGradevinu.Services
 @using System.IO
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
+@inject NavigationManager NavigationManager
 @inherits OwningComponentBase<JobsService>
 @*@using Microsoft.AspNetCore.Components.Authorization
     @inject AuthenticationStateProvider AuthenticationStateProvider*@
@@ -16,27 +17,27 @@
 
     <div class="form-group">
         <label for="imeprijedloga" class="control-label">Ime poslovnog prijedloga</label>
-        <InputText id="imeprijedloga" @bind-Value="jobload.Name"></InputText><br />
+        <InputText id="imeprijedloga" class="form-control" @bind-Value="jobload.Name"></InputText><br />
         <ValidationMessage For="@(() => jobload.Name)" />
     </div>
     <div class="form-group">
         <label for="pocetakrad" class="control-label">Pocetak radova</label>
-        <InputDate @bind-Value="jobload.PocetakRadova" id="pocetakrad"></InputDate><br />
+        <InputDate class="form-control" @bind-Value="jobload.PocetakRadova" id="pocetakrad"></InputDate><br />
         <ValidationMessage For="@(() => jobload.PocetakRadova)" />
     </div>
     <div class="form-group">
         <label class="control-label" for="descrip">Kratki opis posla</label>
-        <InputText id="descrip" @bind-Value="jobload.Description"></InputText><br />
+        <InputText class="form-control" id="descrip" @bind-Value="jobload.Description"></InputText><br />
         <ValidationMessage For="@(() => jobload.Description)" />
     </div>
     <div class="form-group">
         <label class="control-label" for="adresa">Adresa posla:</label>
-        <InputText id="adresa" @bind-Value="jobload.Adresa"></InputText><br />
+        <InputText class="form-control" id="adresa" @bind-Value="jobload.Adresa"></InputText><br />
         <ValidationMessage For="@(() => jobload.Adresa)" />
     </div>
     <div class="form-group">
         <label class="control-label" for="grad">Grad:</label>
-        <InputSelect id="grad" @bind-Value="jobload.CityId">
+        <InputSelect class="form-control" id="grad" @bind-Value="jobload.CityId">
             <br />
             <option selected disabled="true">-- Odaberite Grad --</option>
             @foreach (var grad in cities)
@@ -49,18 +50,19 @@
     </div>
     <div class="form-group">
         <label class="control-label" for="sobe">Soba potrebna za radit</label>
-        <InputSelect id="sobe" @bind-Value="jobload.Rooms">
-            <br />
+        <InputSelect class="form-control" id="sobe" @bind-Value="jobload.Rooms">
             <option selected disabled="true">-- Izaberite sobu --</option>
-            <option value="0">Bazen</option>
-            <option value="1">Kupaona</option>
-            <option value="2">Ostalo</option>
+            @foreach (Jobs.Room soba in Enum.GetValues(typeof(Jobs.Room)))
+            {
+                <option>@soba.ToString()</option>
+            }
+
         </InputSelect>
         <ValidationMessage For="@(() => jobload.Rooms)" />
     </div>
     <div class="form-group">
         <label class="control-label" for="widedescrip">Širok opis posla</label>
-        <InputTextArea id="widedescrip" @bind-Value="jobload.WideDescription"></InputTextArea><br />
+        <InputTextArea class="form-control" id="widedescrip" @bind-Value="jobload.WideDescription"></InputTextArea><br />
         <ValidationMessage For="@(() => jobload.WideDescription)" />
     </div>
 
@@ -74,25 +76,23 @@
 @code {
 
     [Parameter]
-    public int JobId { get; set; }
+    public string id { get; set; }
 
     private Jobs jobload = new Jobs();
     List<City> cities;
     public string UserName;
+
     protected override void OnInitialized()
     {
+        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
         cities = Service.GetCities();
-        jobload = Service.GetJobForEdit(JobId);
+        jobload = Service.GetJobForEdit(Convert.ToInt32(id));
     }
 
     private async Task HandleValidSubmit()
     {
-        await Service.OnEditOffer(jobload);   
+        await Service.OnEditOffer(jobload);
+        NavigationManager.NavigateTo("Poslovi");
     }
-    protected override async Task OnInitializedAsync()
-    {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-    }
-
 
 }

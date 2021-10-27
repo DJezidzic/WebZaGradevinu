@@ -1,0 +1,62 @@
+﻿@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using System.IO
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity;
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor httpContextAccessor
+@inherits OwningComponentBase<AdminService>
+@attribute [Authorize(Roles = "Admin")]
+
+<br />
+
+<EditForm Model="identityRole" OnValidSubmit="SubmitRole">
+    <div class="input-group">
+        <InputText name="roleName" @bind-Value="identityRole.Name" class="form-control w-25" />
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-info">Dodajte novu ulogu</button>
+        </span>
+    </div>
+</EditForm>
+
+@if (roles != null)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Uloga</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in roles)
+            {
+                <tr>
+                    <td>@role.Id</td>
+                    <td>@role.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+
+    private IdentityRole identityRole = new IdentityRole();
+    List<IdentityRole> roles;
+
+    protected override void OnInitialized()
+    {
+        roles = Service.GetRoles();
+    }
+
+    private async Task SubmitRole()
+    {
+        await Service.AddRole(identityRole.Name);
+        roles = Service.GetRoles();
+    }
+
+
+}

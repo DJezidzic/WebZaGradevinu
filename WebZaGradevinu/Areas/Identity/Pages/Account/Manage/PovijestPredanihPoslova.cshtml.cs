@@ -28,7 +28,7 @@ namespace WebZaGradevinu.Areas.Identity.Pages.Account.Manage
         }
 
         [BindProperty]
-        public OutputModel Output { get; set; }
+        public List<Jobs> Job { get; set; }   //s time šaljemo u model ono što hocemo prikazat
 
         public class OutputModel
         {
@@ -41,23 +41,6 @@ namespace WebZaGradevinu.Areas.Identity.Pages.Account.Manage
             [Display(Name ="Opis")]
             public string Opis { get; set; }
         }
-
-        public async Task LoadAsync(AppUser user)
-        {
-            var naziv = await _dbContext.JobsListing.Include(c => c.Company).Where(x => x.Company.Email == user.Email).Select(x=>x.Name).FirstOrDefaultAsync();
-            var adresa = await _dbContext.JobsListing.Include(c => c.Company).Where(x => x.Company.Email == user.Email).Select(x => x.Adresa).FirstOrDefaultAsync();
-            var gradid = await _dbContext.JobsListing.Include(c => c.Company).Where(x => x.Company.Email == user.Email).Select(x => x.CityId).FirstOrDefaultAsync();
-            var grad = await _dbContext.Cities.Where(x => x.ID == gradid).Select(x => x.Name).FirstOrDefaultAsync();
-            var opis = await _dbContext.JobsListing.Include(c => c.Company).Where(x => x.Company.Email == user.Email).Select(x => x.Description).FirstOrDefaultAsync();
-
-            Output = new OutputModel
-            {
-                NazivPosla = naziv,
-                Adresa = adresa,
-                Grad = grad,
-                Opis = opis
-            };
-        }
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -65,7 +48,7 @@ namespace WebZaGradevinu.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            await LoadAsync(user);
+            Job = _dbContext.JobsListing.Include(y => y.Company).Include(y => y.City).Include(y=>y.AcceptedJobs).Where(y => y.Company.Email == user.Email).ToList();
             return Page();
         }
     }

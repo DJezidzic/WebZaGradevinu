@@ -33,7 +33,7 @@ namespace WebZaGradevinu.Shared
         private void HideToast()
         {
             IsVisible = false;
-            StateHasChanged();
+            //StateHasChanged();
         }
 
         private void BuildToastSettings(ToastLevel level, string message)

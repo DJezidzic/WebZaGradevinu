@@ -12,6 +12,7 @@ using WebZaGradevinu.Data;
 namespace WebZaGradevinu.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    [IgnoreAntiforgeryToken]
     public class LogoutModel : PageModel
     {
         private readonly SignInManager<AppUser> _signInManager;

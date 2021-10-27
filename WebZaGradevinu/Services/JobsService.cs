@@ -23,7 +23,7 @@ namespace WebZaGradevinu.Services
         {
             try
             {
-                var company = this._dbcontext.Companies.Where(x => x.Email == UserName).Select(y => y.ID).FirstOrDefault();
+                var company = this._dbcontext.Companies.Where(x => x.Email == UserName).Select(y => y.Id).FirstOrDefault();
                 job.AktivanOglas = true;
                 job.CompanyId = company;
                 await _dbcontext.JobsListing.AddAsync(job);
@@ -76,10 +76,10 @@ namespace WebZaGradevinu.Services
             return _dbcontext.JobsListing.Include(c=>c.Company).Where(x => x.Company.Email == UserName && x.AktivanOglas == true).ToList();
         }
 
-        public List<Jobs> displayJobs(string UserName)
+        public List<Jobs> DisplayJobs(string UserName)
         {
             //Treba sredit da se pokazuju samo poslovi koji nisu vezani za firmu koja traži poslove
-            return _dbcontext.JobsListing.Include(c=>c.AcceptedJobs).Where(x=> x.Company.Email != UserName && (x.AktivanOglas == true && x.AcceptedJobs.JobId != x.ID)).ToList();
+            return _dbcontext.JobsListing.Include(c=>c.AcceptedJobs).Include(x=>x.Company).Where(x=> x.Company.Email != UserName && (x.AktivanOglas == true && x.AcceptedJobs.Select(x=>x.JobId).FirstOrDefault() != x.ID)).ToList();
         }
 
         public List<City> GetCities()
@@ -94,7 +94,7 @@ namespace WebZaGradevinu.Services
 
         public async Task AcceptJob(Jobs job, string UserName)
         {
-            var company = this._dbcontext.Companies.Where(x => x.Email == UserName).Select(y => y.ID).FirstOrDefault();
+            var company = this._dbcontext.Companies.Where(x => x.Email == UserName).Select(y => y.Id).FirstOrDefault();
             AcceptedJobs acjob = new();
 
             try
@@ -117,12 +117,13 @@ namespace WebZaGradevinu.Services
 
         public List<AcceptedJobs> GetAcceptedJobsList(string Username)
         {
-            var company = _dbcontext.Companies.Where(x => x.Email == Username).Select(x => x.ID).FirstOrDefault();
-            return _dbcontext.AcceptedJobsList.Where(x => x.CompanyId == company).ToList();
+            var company = _dbcontext.Companies.Where(x => x.Email == Username).Select(x => x.Id).FirstOrDefault();
+            return _dbcontext.AcceptedJobsList.Include(x=>x.Company).Include(x=>x.Jobs).Where(x => x.CompanyId == company).ToList();
         }
 
-        public async Task FinishJob(AcceptedJobs accjob)
+        public async Task FinishJob(int id)
         {
+            var accjob = await _dbcontext.AcceptedJobsList.FindAsync(id);
             try
             {
                 accjob.JobisFinished = true;

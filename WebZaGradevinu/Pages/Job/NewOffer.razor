@@ -3,8 +3,10 @@
 @using WebZaGradevinu.Services
 @using System.IO
 @using Microsoft.AspNetCore.Http
+@inject NavigationManager NavigationManager
 @inject IHttpContextAccessor httpContextAccessor
 @inherits OwningComponentBase<JobsService>
+@attribute [Authorize(Roles = "Admin,User")]
 @*@using Microsoft.AspNetCore.Components.Authorization
     @inject AuthenticationStateProvider AuthenticationStateProvider*@
 
@@ -15,23 +17,23 @@
 
     <div class="form-group">
         <label for="imeprijedloga" class="control-label">Ime poslovnog prijedloga</label>
-        <InputText id="imeprijedloga" @bind-Value="jobs.Name"></InputText><br />
+        <InputText id="imeprijedloga" class="form-control" @bind-Value="jobs.Name"></InputText><br />
     </div>
     <div class="form-group">
         <label for="pocetakrad" class="control-label">Pocetak radova</label>
-        <InputDate @bind-Value="jobs.PocetakRadova" id="pocetakrad"></InputDate><br />
+        <InputDate class="form-control" @bind-Value="jobs.PocetakRadova" id="pocetakrad"></InputDate><br />
     </div>
     <div class="form-group">
         <label class="control-label" for="descrip">Kratki opis posla</label>
-        <InputText id="descrip" @bind-Value="jobs.Description"></InputText><br />
+        <InputText id="descrip" class="form-control" @bind-Value="jobs.Description"></InputText><br />
     </div>
     <div class="form-group">
         <label class="control-label" for="adresa">Adresa posla:</label>
-        <InputText id="adresa" @bind-Value="jobs.Adresa"></InputText><br />
+        <InputText id="adresa" class="form-control" @bind-Value="jobs.Adresa"></InputText><br />
     </div>
     <div class="form-group">
         <label class="control-label" for="grad">Grad:</label>
-        <InputSelect id="grad" @bind-Value="jobs.CityId">
+        <InputSelect id="grad" class="form-control" @bind-Value="jobs.CityId">
             <br />
             <option selected disabled="true">-- Odaberite Grad --</option>
             @foreach (var grad in cities)
@@ -43,17 +45,18 @@
     </div>
     <div class="form-group">
         <label class="control-label" for="sobe">Soba potrebna za radit</label>
-        <InputSelect id="sobe" @bind-Value="jobs.Rooms">
+        <InputSelect id="sobe" class="form-control" @bind-Value="jobs.Rooms">
             <br />
             <option selected disabled="true">-- Izaberite sobu --</option>
-            <option value="0">Bazen</option>
-            <option value="1">Kupaona</option>
-            <option value="2">Ostalo</option>
+            @foreach (Jobs.Room soba in Enum.GetValues(typeof(Jobs.Room)))
+            {
+                <option>@soba.ToString()</option>
+            }
         </InputSelect>
     </div>
     <div class="form-group">
         <label class="control-label" for="widedescrip">Širok opis posla</label>
-        <InputTextArea id="widedescrip" @bind-Value="jobs.WideDescription"></InputTextArea><br />
+        <InputTextArea id="widedescrip" class="form-control" @bind-Value="jobs.WideDescription"></InputTextArea><br />
     </div>
 
     <div class="form-group">
@@ -75,7 +78,8 @@
 
     private async Task HandleValidSubmit()
     {
-        await Service.OnNewOfferCreate(jobs, UserName);   //Treba još poslat korisnika=>riješeno
+        await Service.OnNewOfferCreate(jobs, UserName);
+        NavigationManager.NavigateTo("Poslovi");
     }
     protected override async Task OnInitializedAsync()
     {

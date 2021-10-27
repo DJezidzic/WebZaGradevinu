@@ -11,15 +11,15 @@
             </div>
             <div class="modal-body" style="display:flex;">
                 <div class="container-fluid">
-                    <p>@WideDescrip</p><br />
-                    <p>@modaladress</p><br />
-                    <p>@grad.Where(x => x.ID == modalgrad).Select(y => y.Name).FirstOrDefault()</p>
+                    <p>Široki opis posla: @WideDescrip</p><br />
+                    <p>Adresa: @modaladress</p><br />
+                    <p>Grad: @grad.Where(x => x.ID == modalgrad).Select(y => y.Name).FirstOrDefault()</p>
 
                 </div>
                  
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" @onclick="@ModalCancel">Close</button>
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal" @onclick="@ModalCancel">Close</button>
             </div>
         </div>
     </div>

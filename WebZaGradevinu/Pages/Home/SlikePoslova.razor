@@ -2,10 +2,16 @@
 @inject NavigationManager NavigationManager
 
 <h3>Galerija slika</h3>
+<hr />
 
 
 <TabControl>
-    <button class="btn btn-secondary" @onclick="@NavigateToImageUpload">Upload Images</button>
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <button class="btn btn-secondary" @onclick="@NavigateToImageUpload">Upload Images</button>
+        </Authorized>
+    </AuthorizeView>
+    
     <TabPage Text="Bazen">
         <Bazen />
     </TabPage>

@@ -247,3 +247,6 @@ a, .btn-link {
         opacity: 1;
     }
 }
+.footer{
+    overflow:auto;
+}

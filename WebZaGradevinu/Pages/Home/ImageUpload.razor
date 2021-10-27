@@ -3,6 +3,7 @@
 @using WebZaGradevinu.Services
 @using BlazorInputFile
 @using System.IO
+@attribute [Authorize(Roles = "Admin")]
 
 @inherits OwningComponentBase<ImgUploadService>
 
@@ -57,9 +58,9 @@
 
 @code {
 
-    private List <BreadcrumbItem> _items = new List<BreadcrumbItem> {  
-    new BreadcrumbItem("Home", href: "/"),  
-    new BreadcrumbItem("Galerija", href: "/slikePoslova"),  
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
+    new BreadcrumbItem("Home", href: "/"),
+    new BreadcrumbItem("Galerija", href: "/slikePoslova"),
     new BreadcrumbItem("Image Upload", href: "/ImageUpload")
     };
 

@@ -1,17 +1,65 @@
-﻿@using Microsoft.AspNetCore.Authorization;
-@using Microsoft.AspNetCore.Identity;
-@using WebZaGradevinu.Data 
-@inject UserManager<AppUser> _UserManager
-@inject RoleManager<IdentityRole> _RoleManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@using System.IO
+@using Microsoft.AspNetCore.Http
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor httpContextAccessor
+@inherits OwningComponentBase<AdminService>
+@attribute [Authorize(Roles = "Admin")]
+
+<br />
 
 
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv Tvrtke</th>
+            <th>Email</th>
+            <th>OIB</th>
+            <th>Promjena Uloge</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>@user.NazivTvrtke</td>
+                <td>@user.Email</td>
+                <td>@user.OIB</td>
+                <td>
+                    <button type="button" class="btn btn-primary" @onclick="()=>ManageRole(user)">Promjeni ulogu</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-
-<h3>UserManage</h3>
+@if (UserRoleShowToModal)
+{
+    <ModalAdmin UserSelected="@UserSelected" OnClose="@OnModalClose"></ModalAdmin>
+}
 
 @code {
-    /// <summary>
-    /// Onemogućit automatsko stvaranje Usera, pa sredit admin dodavnje i onda vratit User role dodavanje
-    /// </summary>
+
+    List<AppUser> users;
+    AppUser UserSelected;
+    bool UserRoleShowToModal = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = Service.GetUsers();
+    }
+
+    private async Task ManageRole(AppUser user)
+    {
+        UserSelected = user;
+        UserRoleShowToModal = true;
+    }
+
+    private async Task OnModalClose(bool accepted)
+    {
+        UserRoleShowToModal = false;
+        StateHasChanged();
+    }
+
 }

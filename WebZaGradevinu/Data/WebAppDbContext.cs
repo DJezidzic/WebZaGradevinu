@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,7 @@ namespace WebZaGradevinu.Data
 {
     public class WebAppDbContext : IdentityDbContext<AppUser>
     {
-
         protected WebAppDbContext() { }
-
         public WebAppDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<ImageLists> ImageListing { get; set; }
@@ -19,6 +18,8 @@ namespace WebZaGradevinu.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<AcceptedJobs> AcceptedJobsList { get; set; }
+
+
 
     }
 }

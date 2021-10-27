@@ -4,6 +4,7 @@
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
 @inherits OwningComponentBase<JobsService>
+@attribute [Authorize(Roles = "Admin,User")]
 
 <hr />
 
@@ -12,55 +13,64 @@
         <button class="btn btn-outline-primary" @onclick="@NavigateToNewOffer"><i class="oi oi-plus"></i>Dodaj novi posao</button>
     </div>
 </div>
-<table style="margin-top: 20px; color:aliceblue;" class="table table-condensed" id="tbl-companies">
-    <thead>
-        <tr>
-            <th>Prostorija</th>
-            <th>Opis</th>
-            <th>Ime tvrtke</th>
-            <th>Posao</th>
-            <th>Pocetak radova</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in jobload)
-        {
-            <tr>
-                <td>@item.Rooms</td>
-                <td>
-                    <a style=" color:aliceblue;" @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
-                </td>
-                <td>
-                    <p style=" color:aliceblue;">@item.Company.NazivTvrtke</p>
-                </td>
-                <td>
-                    <p style=" color:aliceblue;">@item.Name</p>
-                </td>
-                <td>
-                    <p style=" color:aliceblue;">@item.PocetakRadova</p>
-                </td>
-                <td>
-                    <button class="btn btn-link" @onclick="()=> NavigateToEditOffer(item.ID) " style=" color:aliceblue;">[Edit]</button>
-                </td>
-                <td>
-                    <button class="btn btn-danger" type="button" @onclick="(() => OnDeleteJob(item.ID))">Delete</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-@if (WideDescripShowToModal)
+@if (jobload != null)
 {
-    <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
+    <table class="table table-condensed" id="tbl-companies">
+        <thead>
+            <tr>
+                <th>Prostorija</th>
+                <th>Opis</th>
+                <th>Ime tvrtke</th>
+                <th>Posao</th>
+                <th>Pocetak radova</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in jobload)
+            {
+                <tr>
+                    <td>@item.Rooms</td>
+                    <td>
+                        <a @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
+                    </td>
+                    <td>
+                        <p>@item.Company.NazivTvrtke</p>
+                    </td>
+                    <td>
+                        <p>@item.Name</p>
+                    </td>
+                    <td>
+                        <p>@item.PocetakRadova.ToLongDateString()</p>
+                    </td>
+                    <td>
+                        <button class="btn btn-success" @onclick="() => NavigateToEditOffer(item.ID)">Edit</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" type="button" @onclick="(() => OnDeleteJob(item.ID))">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (WideDescripShowToModal)
+    {
+        <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
+    }
+
 }
+else
+{//<div class="loader"></div>
+    <p>Trenutno nemate dodanih poslova</p>
+}
+
 
 @code {
 
     private void NavigateToNewOffer() { NavigationManager.NavigateTo("NewOffer"); }
-    private void NavigateToEditOffer(int id) { NavigationManager.NavigateTo("EditOffer" + "/" + id); }
+    private void NavigateToEditOffer(int id) { NavigationManager.NavigateTo("Poslovi/EditOffer" + "/" + id); }
     List<Jobs> jobload;
     public string UserName;
 
@@ -83,17 +93,13 @@
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        jobload = Service.DisplayMyJobs(UserName);
     }
 
     private async Task OnModalClose(bool accepted)
     {
         WideDescripShowToModal = false;
         StateHasChanged();
-    }
-
-    protected override void OnInitialized()
-    {
-        jobload = Service.DisplayMyJobs(UserName);
     }
 
 }
