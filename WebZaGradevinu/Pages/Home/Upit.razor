@@ -1,0 +1,101 @@
+﻿@page "/upit"
+@using WebZaGradevinu.Data
+@using WebZaGradevinu.Services
+@inject ToastService toastService
+
+@inherits OwningComponentBase<HomeService>
+<h1 class="align-middle">Kontaktirajte nas</h1>
+<br />
+<p class="align-middle">Odgovorit ćemo u što kraćem roku.</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-4" id="div1" style="background-color:lightblue">
+        <br />
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b><i class="oi oi-home"></i> &nbsp;Adresa sjedišta</b></div>
+                <div class="panel-body">
+                    <address>
+                        Slavonska Avenija, 14<br />
+                        Žitnjak, 10000 Zagreb<br />
+                        <abbr title="Phone">P:</abbr>
+                        097 7025 432
+                    </address>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Javite nam se!</div>
+                <br />
+                <div class="panel-body">
+                    <address>
+                        <strong><i class="oi oi-wrench"></i>&nbsp; Podrška:</strong><br /><a href="mailto:djezidzic@tvz.hr">djezidzic@tvz.hr</a><br />
+                        <strong><i class="oi oi-transfer"></i>&nbsp; Marketing:</strong><br /> <a href="mailto:dubravko.jezidzic@gmail.com">dubravko.jezidzic@gmail.com</a>
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6" id="div2">
+        <br />
+        <br />
+        <EditForm Model="contact" OnValidSubmit="HandleValidSubmit">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="ime"><b>Ime</b></label>
+                        <MudTextField @bind-Value="contact.Ime" class="form-control" placeholder="Unesite ime" name="ime" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="prezime"><b>Prezime</b></label>
+                        <MudTextField @bind-Value="contact.Prezime" class="form-control" placeholder="Unesite prezime" name="prezime" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="control-label"><b>Email</b></label>
+                <MudTextField @bind-Value="contact.Email" class="form-control" placeholder="Unesite email" name="email" />
+            </div>
+            <div class="form-group">
+                <label for="poruka" class="control-label"><b>Poruka</b></label>
+                <InputTextArea @bind-Value="contact.Poruka" class="form-control" rows="5" name="poruka"></InputTextArea>
+            </div>
+            <div class="form-group">
+                <label for="tip" class="control-label"><b>Tip upita</b></label>
+                <InputSelect name="tip" class="form-control" @bind-Value="contact.TipUpita">
+                    <option value="Pohvala">Pohvala</option>
+                    <option value="Upit">Upit</option>
+                    <option value="Poslovni prijedlog">Poslovni prijedlog</option>
+                    <option value="Žalba">Žalba</option>
+                </InputSelect>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Pošalji</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private int currentCount = 0;
+    private ContactForm contact = new ContactForm();
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Service.SaveContactForm(contact);
+        toastService.ShowToast("Uspješno ste poslali upit", ToastLevel.Success);
+        await Service.OnEmailSend(contact);
+
+    }
+}

@@ -152,6 +152,14 @@ namespace WebZaGradevinu.Services
                 throw;
             }
         }
+        public List<Jobs> DisplaySearchedMyJobs(string UserName,string search)
+        {
+            return _dbcontext.JobsListing.Include(c => c.Company).Where(x => x.Company.Email == UserName && x.AktivanOglas == true && x.Name.ToLower().Contains(search.ToLower())).ToList();
+        }
+        public List<Jobs> DisplaySearchedJobs(string UserName, string search)
+        {
+            return _dbcontext.JobsListing.Include(c => c.AcceptedJobs).Include(x => x.Company).Where(x => x.Company.Email != UserName && (x.AktivanOglas == true && x.AcceptedJobs.Select(x => x.JobId).FirstOrDefault() != x.ID) && (x.Name.ToLower().Contains(search.ToLower()) || x.Company.NazivTvrtke.ToLower().Contains(search.ToLower()))).ToList();
+        }
 
     }
 }

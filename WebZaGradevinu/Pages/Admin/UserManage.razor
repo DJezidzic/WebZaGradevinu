@@ -34,9 +34,25 @@
     </tbody>
 </table>
 
+
+
 @if (UserRoleShowToModal)
 {
-    <ModalAdmin UserSelected="@UserSelected" OnClose="@OnModalClose"></ModalAdmin>
+    //<ModalAdmin UserSelected="@UserSelected" OnClose="@OnModalClose"></ModalAdmin>
+    <br />
+    <h3>Dodavanje/uklanjanje administratorske uloge</h3>
+    <div class="container-fluid">
+        <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+            <div class="form-group">
+                <label for="chck">Administratorska uloga</label>
+                <InputCheckbox id="chck" type="checkbox" @bind-Value="model.SelectedAdmin"></InputCheckbox>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-primary">Spremi</button>
+                <button class="btn btn-outline-danger" @onclick="()=>OnModalClose()">Otkaži</button>
+            </div>
+        </EditForm>
+    </div>
 }
 
 @code {
@@ -44,19 +60,25 @@
     List<AppUser> users;
     AppUser UserSelected;
     bool UserRoleShowToModal = false;
+    AdminService.ManageUserRolesModel model;
+    private async Task HandleValidSubmit()
+    {
+        await Service.EditRoles(model, UserSelected);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         users = Service.GetUsers();
     }
 
-    private async Task ManageRole(AppUser user)
+    public async Task ManageRole(AppUser user)
     {
         UserSelected = user;
+        model = await Service.GetManageUserRole(UserSelected);
         UserRoleShowToModal = true;
     }
 
-    private async Task OnModalClose(bool accepted)
+    private async Task OnModalClose()
     {
         UserRoleShowToModal = false;
         StateHasChanged();

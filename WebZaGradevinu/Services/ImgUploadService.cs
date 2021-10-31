@@ -30,6 +30,10 @@ namespace WebZaGradevinu.Services
         {
             return _dbcontext.ImageListing.ToList();
         }
+        public List<ImageLists> DisplaySearchedImages(string search)
+        {
+            return _dbcontext.ImageListing.Where(x => x.ImageName.ToLower().Contains(search.ToLower())).ToList();
+        }
 
         public async Task OnDelete(int imgid)
         {

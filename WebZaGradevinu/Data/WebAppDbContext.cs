@@ -18,7 +18,7 @@ namespace WebZaGradevinu.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<AcceptedJobs> AcceptedJobsList { get; set; }
-
+        public DbSet<ContactForm> ContactForms { get; set; }
 
 
     }

@@ -19,7 +19,7 @@
     <InputSelect @bind-Value="@imglistobj.Types">
         @foreach (var room in Enum.GetValues(typeof(ImageLists.RoomType)))
         {
-            <option value="@room">@room</option>
+            <option value="@room">@room</option>//problem kad se inserta slika, nakon inserta se polja ne prazne
         }
     </InputSelect>
     <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
@@ -29,7 +29,7 @@
 
 <br />
 
-<table>
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Image name</th>
@@ -51,10 +51,6 @@
         }
     </tbody>
 </table>
-
-
-
-
 
 @code {
 
@@ -79,6 +75,7 @@
         imglistobj.ImgId = 0;
         imglistobj.Image = imguploadobj;
         Service.UploadImg(imglistobj);
+        StateHasChanged();
         imgListTab = Service.displayImage();
 
     }
@@ -92,6 +89,7 @@
             await file.Data.CopyToAsync(memstrm);
             imguploadobj = memstrm.ToArray();
         }
+
     }
 
     protected override void OnInitialized()

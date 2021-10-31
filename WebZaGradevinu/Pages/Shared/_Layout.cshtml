@@ -35,20 +35,17 @@
                             $"we have looked at it in the following locations: {System.Environment.NewLine}{string.Join(System.Environment.NewLine, result.SearchedLocations)}.");
                     }
                 </div>
+                
             </div>
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container body-content">
         <main role="main" class="pb-3">
             @RenderBody()
+            <br />
         </main>
     </div>
-    <footer class="footer border-top text-muted" style="overflow:auto">
-        <div class="container">
-            &copy; 2021 - WebZaGradevinu - <a asp-area="" asp-page="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/Identity/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Identity/js/site.js" asp-append-version="true"></script>

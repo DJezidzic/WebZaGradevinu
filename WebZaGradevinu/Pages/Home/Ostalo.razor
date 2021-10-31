@@ -7,6 +7,9 @@
 
 <hr />
 
+<div class="input-group">
+    <input type="text" id="txtSearch" placeholder="Traži sliku..." @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@SearchIt" @onchange="@OnInitialized" class="form-control w-15" />
+</div>
 
 @foreach (var imgshow in imgdispobj)
 {
@@ -46,11 +49,18 @@
         StateHasChanged();
     }
 
+    string SearchTerm { get; set; } = "";
+    void SearchIt()
+    {
+        imgdispobj = Service.DisplaySearchedImages(SearchTerm);
+    }
+
     List<ImageLists> imgdispobj;
 
     protected override void OnInitialized()
     {
-        imgdispobj = Service.displayImage();
+        //imgdispobj = Service.displayImage();
+        imgdispobj = Service.DisplaySearchedImages(SearchTerm);
     }
 
     string convertImageForGallery(byte[] image)

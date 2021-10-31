@@ -14,13 +14,8 @@
                 <div class="container-fluid">
                     <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
                         <div class="form-group">
-                            @foreach (var item in model)
-                            {
-                                <select type="checkbox" class="form-check-input" @bind="@item.Selected" />
-                                <label class="form-check-label" for="@item.Selected">
-                                    @item.RoleName
-                                </label>
-                            }
+                            <label for="chck">Administratorska uloga</label>
+                            <input id="chck" type="checkbox" @bind-value="model.SelectedAdmin"/>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-outline-primary">Spremi</button>
@@ -40,7 +35,7 @@
     public AppUser UserSelected { get; set; }
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
-    List<AdminService.ManageUserRolesModel> model;
+    AdminService.ManageUserRolesModel model;
 
     private Task ModalCancel()
     {

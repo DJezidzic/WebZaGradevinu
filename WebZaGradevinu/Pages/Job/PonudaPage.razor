@@ -14,6 +14,11 @@
         <button class="btn btn-outline-primary" @onclick="@NavigateToNewOffer"><i class="oi oi-plus"></i>Dodaj novi posao</button>
     </div>
 </div>
+<br />
+<div class="input-group">
+    <input type="text" id="txtSearch" placeholder="Tražite posao po nazivu ili firmi koja ga je objavila ..." @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@SearchIt" @onchange="@OnInitializedAsync" class="form-control w-15" />
+</div>
+
 @if (jobload != null)
 {<table style="margin-top: 20px;" class="table table-condensed" id="tbl-companies">
         <thead>
@@ -71,6 +76,11 @@ else
     string wideDescrip;
     string modaladress;
     int modalgrad;
+    string SearchTerm { get; set; } = "";
+    void SearchIt()
+    {
+        jobload = Service.DisplaySearchedJobs(UserName, SearchTerm);
+    }
 
     private async Task AcceptJobFunction(Jobs job)
     {
@@ -90,7 +100,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-        jobload = Service.DisplayJobs(UserName);
+        jobload = Service.DisplaySearchedJobs(UserName, SearchTerm);
+        //jobload = Service.DisplayJobs(UserName);
         // Potrebno je sve jobload premjestit u OnInitializedAsync jer se pokreće nakon OnInitialized
     }
 

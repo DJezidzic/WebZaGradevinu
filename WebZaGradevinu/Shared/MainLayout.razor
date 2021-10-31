@@ -2,12 +2,12 @@
 
 <div class="page">
     <Toast />
-    <div class="sidebar">
+    <div class="sidebar" style="background-image: linear-gradient( 180deg, rgb(5, 39, 103) 0%, #4730068f 70%);">
         <NavMenu />
     </div>
 
     <div class="main">
-        <div class="top-row px-4">
+        <div class="top-row px-4" style="background-color: #b1b9c380;">
             <LoginDisplay />
             <AuthorizeView Roles="Admin,User">
                 <Authorized>
@@ -21,6 +21,7 @@
         </div>
     </div>
 </div>
+
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />

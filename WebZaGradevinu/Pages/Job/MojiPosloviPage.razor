@@ -13,6 +13,10 @@
         <button class="btn btn-outline-primary" @onclick="@NavigateToNewOffer"><i class="oi oi-plus"></i>Dodaj novi posao</button>
     </div>
 </div>
+<br />
+<div class="input-group">
+    <input type="text" id="txtSearch" placeholder="Tražite svoj posao po nazivu..." @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@SearchIt" @onchange="@OnInitializedAsync" class="form-control w-15" />
+</div>
 @if (jobload != null)
 {
     <table class="table table-condensed" id="tbl-companies">
@@ -78,6 +82,11 @@ else
     string wideDescrip;
     string modaladress;
     int modalgrad;
+    string SearchTerm { get; set; } = "";
+    void SearchIt()
+    {
+        jobload = Service.DisplaySearchedMyJobs(UserName,SearchTerm);
+    }
     void ShowModalJobDescrip(Jobs job)
     {
         wideDescrip = job.WideDescription;
@@ -93,7 +102,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-        jobload = Service.DisplayMyJobs(UserName);
+        //jobload = Service.DisplayMyJobs(UserName);
+        jobload = Service.DisplaySearchedMyJobs(UserName, SearchTerm);
     }
 
     private async Task OnModalClose(bool accepted)

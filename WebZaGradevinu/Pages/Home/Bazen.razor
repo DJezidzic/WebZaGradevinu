@@ -4,6 +4,9 @@
 @inherits OwningComponentBase<ImgUploadService>
 
 <hr />
+<div class="input-group">
+    <input type="text" id="txtSearch" placeholder="Traži sliku..." @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@SearchIt" @onchange="@OnInitialized" class="form-control w-15" />
+</div>
 
 <div class="content">
     @foreach (var imgshow in imgdispobj)
@@ -51,12 +54,18 @@
     bool ImgShowToModal = false;
     int idImg;
     string imgTitle;
+    string SearchTerm { get; set; } = "";
     void ShowModalImg(ImageLists img)
     {
         idImg = img.ImgId;
         imgTitle = img.ImageName;
         ImgShowToModal = true;
 
+    }
+
+    void SearchIt()
+    {
+        imgdispobj = Service.DisplaySearchedImages(SearchTerm);
     }
 
     private async Task OnModalClose(bool accepted)
@@ -69,7 +78,8 @@
 
     protected override void OnInitialized()
     {
-        imgdispobj = Service.displayImage();
+        //imgdispobj = Service.displayImage();
+        imgdispobj = Service.DisplaySearchedImages(SearchTerm);
     }
 
     string convertImageForGallery(byte[] image)

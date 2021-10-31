@@ -34,7 +34,7 @@ namespace WebZaGradevinu.Services
         {
             public string RoleId { get; set; }
             public string RoleName { get; set; }
-            public bool Selected { get; set; }
+            public bool SelectedAdmin { get; set; }
         }
 
         public List<IdentityRole> GetRoles()
@@ -56,7 +56,6 @@ namespace WebZaGradevinu.Services
         public async Task<List<string>> GetRole(AppUser user)
         {
             var role = await _userManager.GetRolesAsync(user);
-
             return new List<string> (role);
         }
         /*private async Task<List<string>> GetRolesForUser(AppUser user)
@@ -80,7 +79,7 @@ namespace WebZaGradevinu.Services
             return usersWithRoles;
         }*/
 
-        public async Task<List<ManageUserRolesModel>> GetManageUserRole(AppUser user)
+        /*public async Task<List<ManageUserRolesModel>> GetManageUserRole(AppUser user)
         {
             var userRoleModel = new List<ManageUserRolesModel>();
                 try
@@ -109,17 +108,49 @@ namespace WebZaGradevinu.Services
                     throw;
                 }
             return userRoleModel;
+        }*/
+        public async Task<ManageUserRolesModel> GetManageUserRole(AppUser user)
+        {
+
+            var userRole = new ManageUserRolesModel();
+            var result = await _userManager.IsInRoleAsync(user, "Admin");
+            if (result)
+            {
+                var role = await _roleManager.FindByNameAsync("Admin");
+                userRole.RoleId = role.Id;
+                userRole.RoleName = role.Name;
+                userRole.SelectedAdmin = true;
+            }
+            else
+            {
+                var role = await _roleManager.FindByNameAsync("User");
+                userRole.RoleId = role.Id;
+                userRole.RoleName = role.Name;
+                userRole.SelectedAdmin = false;
+            }
+            return userRole;
+            
         }
 
-        public async Task EditRoles(List<ManageUserRolesModel> model,AppUser user)
+        public async Task EditRoles(ManageUserRolesModel model,AppUser user)
         {
-            if (user != null)
+            var role = await _userManager.IsInRoleAsync(user, "Admin");
+            if(role == false && model.SelectedAdmin == true)
+            {
+                await _userManager.RemoveFromRoleAsync(user, "User");
+                await _userManager.AddToRoleAsync(user, "Admin");
+            }
+            if(role == true && model.SelectedAdmin == false)
+            {
+                await _userManager.RemoveFromRoleAsync(user, "Admin");
+                await _userManager.AddToRoleAsync(user, "User");
+            }
+            /*if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 var result = await _userManager.RemoveFromRolesAsync(user, roles);
-                result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName)); 
-
-            }
+                result = await _userManager.AddToRolesAsync(user, model.Where(x => x.SelectedAdmin).Select(y => y.RoleName)); 
+            }*/
         }
 
 

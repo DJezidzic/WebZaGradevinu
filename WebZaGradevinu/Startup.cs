@@ -49,6 +49,8 @@ namespace WebZaGradevinu
             services.AddScoped<JobsService>();
             services.AddScoped<ToastService>();
             services.AddScoped<AdminService>();
+            services.AddScoped<HomeService>();
+            services.Configure<Security>(Configuration.GetSection("Security"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

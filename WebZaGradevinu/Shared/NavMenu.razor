@@ -1,5 +1,5 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">WebZaGradevinu</a>
+﻿<div class="top-row pl-4 navbar navbar-dark" style="background-color: #d8dce1;">
+    <a class="navbar-brand" href="" style="color: #100d13;">WebZaGradevinu</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,18 +13,18 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="slikePoslova">
+                <span class="oi oi-image" aria-hidden="true"></span> Galerija
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="upit">
+                <span class="oi oi-plus" aria-hidden="true"></span> Pošalji upit
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="slikePoslova">
-                <span class="oi oi-image" aria-hidden="true"></span> Galerija
+                <span class="oi oi-list-rich" aria-hidden="true"></span> O nama
             </NavLink>
         </li>
         <AuthorizeView Roles="User,Admin">
@@ -45,9 +45,15 @@
                 </li>
             </Authorized>
         </AuthorizeView>
-        
+
     </ul>
 </div>
+<div class="navbar align-bottom">
+    <a href="https://www.facebook.com/dominik.jezidzic" class="fa fa-facebook"></a>
+    <a href="mailto:dominik.jezidzic332@gmail.com?subject=subject&cc=dominik.jezidzic332@gmail.com" class="fa fa-google"></a>
+    <a href="https://hr.linkedin.com/" class="fa fa-linkedin"></a>
+</div>
+
 
 @code {
     private bool collapseNavMenu = true;
