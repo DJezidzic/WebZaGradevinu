@@ -287,3 +287,31 @@ a, .btn-link {
     background: #007bb5;
     color: white;
 }
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+    transition: all 0.5s ease !important;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+        
+    }
+    .carousel-inner .item img {
+        flex-grow: 1;
+    }
+}

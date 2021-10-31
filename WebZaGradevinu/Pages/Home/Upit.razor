@@ -79,7 +79,9 @@
             </div>
         </EditForm>
     </div>
+    
 </div>
+<br />
 
 
 @code {
@@ -96,6 +98,7 @@
         await Service.SaveContactForm(contact);
         toastService.ShowToast("Uspješno ste poslali upit", ToastLevel.Success);
         await Service.OnEmailSend(contact);
+        contact = new ContactForm();
 
     }
 }

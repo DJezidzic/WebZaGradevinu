@@ -11,9 +11,9 @@
             </div>
             <div class="modal-body" style="display:flex;">
                 <div class="container-fluid">
-                    <p>Široki opis posla: @WideDescrip</p><br />
-                    <p>Adresa: @modaladress</p><br />
-                    <p>Grad: @grad.Where(x => x.ID == modalgrad).Select(y => y.Name).FirstOrDefault()</p>
+                    <p><b>Široki opis posla:</b> @WideDescrip</p><br />
+                    <p><b>Adresa:</b> @modaladress</p><br />
+                    <p><b>Grad: </b> @grad.Where(x => x.ID == modalgrad).Select(y => y.Name).FirstOrDefault()</p>
 
                 </div>
                  

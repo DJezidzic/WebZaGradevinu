@@ -43,7 +43,6 @@ namespace WebZaGradevinu
                 .AddEntityFrameworkStores<WebAppDbContext>();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<AppUser>>();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<ImgUploadService>();
             services.AddMudServices();
             services.AddScoped<JobsService>();

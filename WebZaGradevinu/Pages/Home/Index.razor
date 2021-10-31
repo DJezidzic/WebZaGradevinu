@@ -1,0 +1,128 @@
+﻿@page "/"
+
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="@firstSlideCss"></li>
+        <li data-target="#myCarousel" data-slide-to="1" class="@secondSlideCss"></li>
+        <li data-target="#myCarousel" data-slide-to="2" class="@thirdSlideCss"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item @firstSlideCss">
+            <img src="./images/20181127_105639.jpg" alt="Galerija slika" class="img-responsive d-block w-100" style="max-height:768px" />
+            <div class="carousel-caption d-md-block" id="slik" style="top: 0; bottom: auto; font-family: Garamond;">
+                <h1 style="color:darkgoldenrod">
+                    Dobrodošli na Web stranicu tvrtke za Keramičarske radove
+                </h1>
+            </div>
+            <div class="carousel-caption d-md-block">
+                <p>
+                    Mnoge naše kreacije sa keramikom i mozaikom možete ovdje pogledati.
+                    <a href="/slikePoslova" class="btn btn-primary">
+                        Pogledajte ovdje
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="carousel-item @secondSlideCss">
+            <img src="./images/downloadfile.jpg" alt="Visual Studio" class="img-responsive d-block w-100" />
+            <div class="carousel-caption d-md-block" id="slik" style="top: 0; bottom: auto; font-family: Garamond;">
+                <h3>
+                    Bavimo se oblaganjem i pripremom bazena za mozaik ili keramiku
+                </h3>
+            </div>
+            <div class="carousel-caption d-md-block">
+                <p>
+                    Ako želite predati svoju poslovnu ponudu prvo se registrirajte.
+                    <a href="Identity/Account/Register" class="btn btn-primary">
+                        Registriraj se.
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="carousel-item @thirdSlideCss">
+            <img src="./images/downloadfile-1.jpg" alt="Microsoft Azure" class="img-responsive d-block w-100" />
+            <div class="carousel-caption d-md-block" id="slik" style="top: 0; bottom: auto; font-family: Garamond;">
+                <h3>
+                    Polažemo keramiku u kupaone, hodnike, na terase i stepenice
+                </h3>
+            </div>
+            <div class="carousel-caption d-md-block">
+                <p>
+                    Možete nas kontaktirati direktno ili uložiti pohvalu/žalbu.
+                    <a href="/upit" class="btn btn-primary">
+                        Kontaktirajte nas!
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="" role="button" data-slide="prev" @onclick="()=>Manually(true)">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="" role="button" data-slide="next" @onclick="()=>Manually(false)">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+@*<div class="row" style="background-color:burlywood">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <h2>Uporaba</h2>
+                <ul>
+                    <li>Web stranica koristi ASP.NET Core MVC</li>
+                    <li>Za stilsko icrtavanje koristi <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>*@
+
+@code{
+
+    string firstSlideCss = "active";
+    string secondSlideCss = "";
+    string thirdSlideCss = "";
+
+    int currentPosition = 0;
+    int currentSlide = 0;
+
+    public void Manually(bool backwards)
+    {
+
+        if (backwards)
+            currentPosition--;
+        else
+            currentPosition++;
+
+        ChangeSlide();
+    }
+
+    private void ChangeSlide()
+    {
+        currentSlide = Math.Abs(currentPosition % 3);
+
+        switch (currentSlide)
+        {
+            case 0:
+                firstSlideCss = "active";
+                secondSlideCss = "";
+                thirdSlideCss = "";
+                break;
+            case 1:
+                firstSlideCss = "";
+                secondSlideCss = "active";
+                thirdSlideCss = "";
+                break;
+            case 2:
+                firstSlideCss = "";
+                secondSlideCss = "";
+                thirdSlideCss = "active";
+                break;
+            default:
+                break;
+        }
+    }
+
+}

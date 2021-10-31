@@ -12,6 +12,9 @@
 
 <h3>Dorada @jobload.Name</h3>
 
+<MudBreadcrumbs Items="_items">
+</MudBreadcrumbs>
+
 <EditForm Model="@jobload" OnValidSubmit="HandleValidSubmit">
     <ValidationSummary />
 
@@ -77,6 +80,11 @@
 
     [Parameter]
     public string id { get; set; }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
+    new BreadcrumbItem("Home", href: "/"),
+    new BreadcrumbItem("Poslovi", href: "/Poslovi"),
+    };
 
     private Jobs jobload = new Jobs();
     List<City> cities;

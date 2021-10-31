@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager _navManager
 
 <div class="page">
     <Toast />
@@ -15,10 +16,14 @@
                 </Authorized>
             </AuthorizeView>
         </div>
+        @if (_navManager.Uri.EndsWith("/") || _navManager.Uri.Contains("/Onama"))
+        {@Body}
+        else
+        { <div class="content px-4">
+          @Body
+          </div>}
 
-        <div class="content px-4">
-            @Body
-        </div>
+
     </div>
 </div>
 
