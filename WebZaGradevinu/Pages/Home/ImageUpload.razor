@@ -14,7 +14,8 @@
 </MudBreadcrumbs>
 
 <EditForm Model="@imglistobj" OnValidSubmit="@VSubmit">
-
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     ImageName: <input type="text" @bind="@imglistobj.ImageName" />
     <InputSelect @bind-Value="@imglistobj.Types">
         @foreach (var room in Enum.GetValues(typeof(ImageLists.RoomType)))

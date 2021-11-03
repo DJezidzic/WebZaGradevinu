@@ -17,7 +17,8 @@
 </MudBreadcrumbs>
 
 <EditForm Model="@jobs" OnValidSubmit="HandleValidSubmit">
-
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     <div class="form-group">
         <label for="imeprijedloga" class="control-label">Ime poslovnog prijedloga</label>
         <MudTextField id="imeprijedloga" class="form-control" @bind-Value="jobs.Name"></MudTextField><br />

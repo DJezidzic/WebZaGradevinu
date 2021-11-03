@@ -27,12 +27,14 @@ namespace WebZaGradevinu.Data
         public DateTime PocetakRadova { get; set; }
         [Required]
         public bool AktivanOglas { get; set; }
-
+        [Required]
         public string Adresa { get; set; }
+        [Required]
         [ForeignKey(nameof(City))]
         public int CityId { get; set; }
         public virtual City City { get; set; }
 
+        [Required]
         [ForeignKey(nameof(Company))]
         public int CompanyId { get; set; }
         public Company Company { get; set; }
