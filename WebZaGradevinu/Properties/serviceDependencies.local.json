@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets.user"
-    },
     "signalr1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.SignalRService/SignalR/WebZaGradevinuservice",
       "type": "signalr.azure",
@@ -14,6 +11,9 @@
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:WebAppDbContext",
       "secretStore": "LocalSecretsFile"
+    },
+    "secrets1": {
+      "type": "secrets.user"
     }
   }
 }

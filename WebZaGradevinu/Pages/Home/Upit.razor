@@ -97,9 +97,9 @@
 
     private async Task HandleValidSubmit()
     {
+        await Service.OnEmailSend(contact);
         await Service.SaveContactForm(contact);
         toastService.ShowToast("Uspješno ste poslali upit", ToastLevel.Success);
-        await Service.OnEmailSend(contact);
         contact = new ContactForm();
 
     }
