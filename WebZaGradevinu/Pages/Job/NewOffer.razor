@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor httpContextAccessor
+@inject AuthenticationStateProvider authenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @attribute [Authorize(Roles = "Admin,User")]
 @*@using Microsoft.AspNetCore.Components.Authorization
@@ -93,7 +94,9 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        //UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
     }
 
 

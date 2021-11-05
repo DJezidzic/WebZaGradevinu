@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @*@using Microsoft.AspNetCore.Components.Authorization
     @inject AuthenticationStateProvider AuthenticationStateProvider*@
@@ -91,9 +92,11 @@
     List<City> cities;
     public string UserName;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        //UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
         cities = Service.GetCities();
         jobload = Service.GetJobForEdit(Convert.ToInt32(id));
     }

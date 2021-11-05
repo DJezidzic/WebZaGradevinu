@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @attribute [Authorize(Roles = "Admin,User")]
 
@@ -85,7 +86,7 @@ else
     string SearchTerm { get; set; } = "";
     void SearchIt()
     {
-        jobload = Service.DisplaySearchedMyJobs(UserName,SearchTerm);
+        jobload = Service.DisplaySearchedMyJobs(UserName, SearchTerm);
     }
     void ShowModalJobDescrip(Jobs job)
     {
@@ -101,8 +102,10 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        //UserName = httpContextAccessor.HttpContext.User.Identity.Name;
         //jobload = Service.DisplayMyJobs(UserName);
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
         jobload = Service.DisplaySearchedMyJobs(UserName, SearchTerm);
     }
 

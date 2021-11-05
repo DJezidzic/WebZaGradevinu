@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @inject ToastService toastService
 @attribute [Authorize(Roles = "Admin,User")]
@@ -99,7 +100,9 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        //UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
         jobload = Service.DisplaySearchedJobs(UserName, SearchTerm);
         //jobload = Service.DisplayJobs(UserName);
         // Potrebno je sve jobload premjestit u OnInitializedAsync jer se pokreće nakon OnInitialized
