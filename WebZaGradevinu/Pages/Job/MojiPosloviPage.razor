@@ -1,14 +1,11 @@
 ﻿@using WebZaGradevinu.Data
 @using WebZaGradevinu.Services
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @attribute [Authorize(Roles = "Admin,User")]
-
 <hr />
-
 <div class="row" style="margin-top: 20px;">
     <div class="col-md-12">
         <button class="btn btn-outline-primary" @onclick="@NavigateToNewOffer"><i class="oi oi-plus"></i>Dodaj novi posao</button>
@@ -37,40 +34,25 @@
             {
                 <tr>
                     <td>@item.Rooms</td>
-                    <td>
-                        <a @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
-                    </td>
-                    <td>
-                        <p>@item.Company.NazivTvrtke</p>
-                    </td>
-                    <td>
-                        <p>@item.Name</p>
-                    </td>
-                    <td>
-                        <p>@item.PocetakRadova.ToLongDateString()</p>
-                    </td>
-                    <td>
-                        <button class="btn btn-success" @onclick="() => NavigateToEditOffer(item.ID)">Edit</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" type="button" @onclick="(() => OnDeleteJob(item.ID))">Delete</button>
-                    </td>
+                    <td><a @onclick="() => ShowModalJobDescrip(item)">@item.Description</a></td>
+                    <td><p>@item.Company.NazivTvrtke</p></td>
+                    <td><p>@item.Name</p></td>
+                    <td><p>@item.PocetakRadova.ToLongDateString()</p></td>
+                    <td><button class="btn btn-success" @onclick="() => NavigateToEditOffer(item.ID)">Edit</button></td>
+                    <td><button class="btn btn-danger" type="button" @onclick="(() => OnDeleteJob(item.ID))">Delete</button></td>
                 </tr>
             }
         </tbody>
     </table>
-
     @if (WideDescripShowToModal)
     {
         <ModalCompJob modaladress="@modaladress" modalgrad="@modalgrad" WideDescrip="@wideDescrip" OnClose="@OnModalClose"></ModalCompJob>
     }
-
 }
 else
 {//<div class="loader"></div>
     <p>Trenutno nemate dodanih poslova</p>
 }
-
 
 @code {
 
@@ -102,8 +84,6 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        //UserName = httpContextAccessor.HttpContext.User.Identity.Name;
-        //jobload = Service.DisplayMyJobs(UserName);
         var state = await authenticationStateProvider.GetAuthenticationStateAsync();
         UserName = state.User.Identity.Name;
         jobload = Service.DisplaySearchedMyJobs(UserName, SearchTerm);

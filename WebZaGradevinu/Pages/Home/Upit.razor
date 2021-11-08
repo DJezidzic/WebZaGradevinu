@@ -8,7 +8,6 @@
 <br />
 <p class="align-middle">Odgovorit ćemo u što kraćem roku.</p>
 <hr />
-
 <div class="row">
     <div class="col-md-4" id="div1" style="background-color:lightblue">
         <br />
@@ -38,7 +37,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-md-6" id="div2">
         <br />
         <br />
@@ -80,21 +78,13 @@
                 <button type="submit" class="btn btn-success">Pošalji</button>
             </div>
         </EditForm>
-    </div>
-    
+    </div> 
 </div>
 <br />
 
-
 @code {
-    private int currentCount = 0;
+
     private ContactForm contact = new ContactForm();
-
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-
     private async Task HandleValidSubmit()
     {
         await Service.OnEmailSend(contact);
