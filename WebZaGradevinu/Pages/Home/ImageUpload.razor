@@ -1,15 +1,11 @@
 ﻿@page "/ImageUpload"
 @using WebZaGradevinu.Data
 @using WebZaGradevinu.Services
-@using BlazorInputFile
 @using System.IO
 @attribute [Authorize(Roles = "Admin")]
-
 @inherits OwningComponentBase<ImgUploadService>
-
 <h3>ImageUpload</h3>
 <hr />
-
 <MudBreadcrumbs Items="_items">
 </MudBreadcrumbs>
 
@@ -20,13 +16,14 @@
     <InputSelect @bind-Value="@imglistobj.Types">
         @foreach (var room in Enum.GetValues(typeof(ImageLists.RoomType)))
         {
-            <option value="@room">@room</option>//problem kad se inserta slika, nakon inserta se polja ne prazne
+            <option value="@room">@room</option>
         }
     </InputSelect>
-    <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+    <InputFile OnChange="HandleFileSelected"/>
     <button type="submit" class="btn btn-success">Insert</button>
 
 </EditForm>
+<h4>@Message</h4>
 
 <br />
 
@@ -60,7 +57,7 @@
     new BreadcrumbItem("Galerija", href: "/slikePoslova"),
     new BreadcrumbItem("Image Upload", href: "/ImageUpload")
     };
-
+    string Message = "";
     ImageLists imglistobj = new ImageLists();
     List<ImageLists> imgListTab;
     public byte[] imguploadobj { get; set; }
@@ -77,23 +74,24 @@
         imglistobj.Image = imguploadobj;
         Service.UploadImg(imglistobj);
         StateHasChanged();
+        Message = "";
         imgListTab = Service.displayImage();
         imglistobj = new ImageLists();
 
     }
-
-    async Task HandleFileSelected(IFileListEntry[] files)
+    async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        var file = files.FirstOrDefault();
+
+        var file = e.File;
         if (file != null)
         {
             var memstrm = new MemoryStream();
-            await file.Data.CopyToAsync(memstrm);
+            await file.OpenReadStream().CopyToAsync(memstrm);
             imguploadobj = memstrm.ToArray();
+            Message = "Uspješno je odabrana slika.";
         }
 
     }
-
     protected override void OnInitialized()
     {
         imgListTab = Service.displayImage();
