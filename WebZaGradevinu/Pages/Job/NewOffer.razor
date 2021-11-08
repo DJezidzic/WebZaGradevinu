@@ -84,6 +84,7 @@
     protected override void OnInitialized()
     {
         cities = Service.GetCities();
+        jobs.PocetakRadova = DateTime.Now;
     }
 
     private async Task HandleValidSubmit()
@@ -95,6 +96,5 @@
     {
         UserName = httpContextAccessor.HttpContext.User.Identity.Name;
     }
-
 
 }
