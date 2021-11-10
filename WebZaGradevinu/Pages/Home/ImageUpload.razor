@@ -93,18 +93,6 @@
 
     }
 
-    /*async Task HandleFileSelected(IFileListEntry[] files)
-    {
-        var file = files.FirstOrDefault();
-        if (file != null)
-        {
-            var memstrm = new MemoryStream();
-            await file.Data.CopyToAsync(memstrm);
-            imguploadobj = memstrm.ToArray();
-        }
-
-    }*/
-
     protected override void OnInitialized()
     {
         imgListTab = Service.displayImage();

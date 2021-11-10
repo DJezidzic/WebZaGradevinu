@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @inject ToastService toastService
 @attribute [Authorize(Roles = "Admin,User")]
@@ -37,7 +38,7 @@
                 <tr>
                     <td>@item.Rooms</td>
                     <td>
-                        <a @onclick="() => ShowModalJobDescrip(item)">@item.Description</a> @*Puni opis se otvara kao modal, napravit kao link*@
+                        <a @onclick="() => ShowModalJobDescrip(item)">@item.Description</a>
                     </td>
                     <td>
                         <p>@item.Company.NazivTvrtke</p>
@@ -99,10 +100,9 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
         jobload = Service.DisplaySearchedJobs(UserName, SearchTerm);
-        //jobload = Service.DisplayJobs(UserName);
-        // Potrebno je sve jobload premjestit u OnInitializedAsync jer se pokreće nakon OnInitialized
     }
 
     private async Task OnModalClose(bool accepted)

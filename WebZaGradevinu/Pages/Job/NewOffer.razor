@@ -5,10 +5,9 @@
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor httpContextAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inherits OwningComponentBase<JobsService>
 @attribute [Authorize(Roles = "Admin,User")]
-@*@using Microsoft.AspNetCore.Components.Authorization
-    @inject AuthenticationStateProvider AuthenticationStateProvider*@
 
 
 <h3>Nova ponuda</h3>
@@ -94,7 +93,8 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
     }
 
 }

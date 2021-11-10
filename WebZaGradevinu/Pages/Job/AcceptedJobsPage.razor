@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inherits OwningComponentBase<JobsService>
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ToastService toastService
 @attribute [Authorize(Roles = "Admin,User")]
 <h3>Prihvaćeni poslovi</h3>
@@ -81,7 +82,8 @@ else
     List<AcceptedJobs> jobload;
     protected override async Task OnInitializedAsync()
     {
-        UserName = httpContextAccessor.HttpContext.User.Identity.Name;
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        UserName = state.User.Identity.Name;
         jobload = Service.GetAcceptedJobsList(UserName);
     }
 
